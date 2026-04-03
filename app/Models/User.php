@@ -30,6 +30,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';

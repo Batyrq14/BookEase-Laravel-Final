@@ -28,9 +28,9 @@
 
                         <!-- Appointment Time -->
                         <div class="mt-4">
-                            <x-input-label for="appointment_time" :value="__('Appointment Date & Time')" />
-                            <x-text-input id="appointment_time" class="block mt-1 w-full" type="datetime-local" name="appointment_time" :value="old('appointment_time')" required />
-                            <x-input-error :messages="$errors->get('appointment_time')" class="mt-2" />
+                            <x-input-label for="scheduled_at" :value="__('Appointment Date & Time')" />
+                            <x-text-input id="scheduled_at" class="block mt-1 w-full" type="datetime-local" name="scheduled_at" :value="old('scheduled_at')" required />
+                            <x-input-error :messages="$errors->get('scheduled_at')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
