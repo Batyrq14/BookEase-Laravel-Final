@@ -1,0 +1,30 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BookEase API",
+        "description": "BookEase API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/services": {
+            "get": {
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Get all services",
+                "operationId": "40d4b53583f5f9e707ab78caa2fa7c0d",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Services",
+            "description": "Services"
+        }
+    ]
+}

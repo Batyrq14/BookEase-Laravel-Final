@@ -1,0 +1,14 @@
+<?php
+declare(strict_types=1);
+namespace App\Http\Requests;
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreAppointmentRequest extends FormRequest {
+    public function authorize(): bool { return true; }
+    public function rules(): array {
+        return [
+            'service_id' => ['required', 'exists:services,id'],
+            'scheduled_at' => ['required', 'date', 'after:now'],
+        ];
+    }
+}
