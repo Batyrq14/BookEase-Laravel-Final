@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AuthorController;
+
+Route::get('/authors', [AuthorController::class, 'index'])->name('authors.index');
+Route::post('/authors', [AuthorController::class, 'store'])->name('authors.store');
 
 Route::get('/', function () {
     return view('welcome');
