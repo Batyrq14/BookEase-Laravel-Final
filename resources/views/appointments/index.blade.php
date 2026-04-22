@@ -1,76 +1,93 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('My Appointments') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900">My Appointments</h1>
+                <p class="text-sm text-slate-500 mt-0.5">View and manage your bookings</p>
+            </div>
+            <a href="{{ route('appointments.create') }}">
+                <x-primary-button type="button">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Book Appointment
+                </x-primary-button>
+            </a>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    @if(session('success'))
-                        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="mb-4 p-4 bg-red-100 text-red-800 rounded">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-                    <div class="mb-4 flex items-center justify-between">
-                        <a href="{{ route('appointments.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            {{ __('Book New Appointment') }}
-                        </a>
-                    </div>
-
-                    @if($appointments->isEmpty())
-                        <p class="text-gray-500">{{ __('You have no appointments booked yet.') }}</p>
-                    @else
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date & Time</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($appointments as $appointment)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $appointment->service->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($appointment->scheduled_at)->format('F j, Y, g:i a') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @if($appointment->status === 'booked')
-                                                <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">Booked</span>
-                                            @elseif($appointment->status === 'cancelled')
-                                                <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded">Cancelled</span>
-                                            @elseif($appointment->status === 'completed')
-                                                <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Completed</span>
-                                            @endif
-                                        </td>
-
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @if($appointment->status === 'booked')
-                                                <form method="POST" action="{{ route('appointments.destroy', $appointment) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-
-                                                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                                                        Cancel
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </td>                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
+    <x-card :padding="false">
+        @if(isset($appointments) && $appointments->count())
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Service</th>
+                    <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Date & Time</th>
+                    <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Notes</th>
+                    <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach ($appointments as $appointment)
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-semibold text-slate-900">{{ $appointment->service->name }}</td>
+                    <td class="px-6 py-4 text-slate-600">
+                        {{ \Carbon\Carbon::parse($appointment->scheduled_at)->format('M j, Y · g:i a') }}
+                    </td>
+                    <td class="px-6 py-4 max-w-[160px]">
+                        @if($appointment->notes)
+                            <p class="text-slate-500 text-xs line-clamp-2">{{ $appointment->notes }}</p>
+                        @else
+                            <span class="text-slate-300 text-xs">—</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4">
+                        @php
+                            $badge = match($appointment->status) {
+                                'booked'    => 'bg-blue-50 text-blue-700 border-blue-200',
+                                'cancelled' => 'bg-red-50 text-red-700 border-red-200',
+                                'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                default     => 'bg-slate-100 text-slate-600 border-slate-200',
+                            };
+                        @endphp
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border {{ $badge }}">
+                            {{ ucfirst($appointment->status) }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        @if($appointment->status === 'booked')
+                        <form method="POST" action="{{ route('appointments.destroy', $appointment) }}"
+                              onsubmit="return confirm('Cancel this appointment?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                                Cancel
+                            </button>
+                        </form>
+                        @else
+                        <span class="text-slate-300 text-xs">—</span>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @else
+        <div class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                <svg class="w-7 h-7 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
             </div>
+            <p class="text-slate-700 font-semibold mb-1">No appointments yet</p>
+            <p class="text-slate-400 text-sm mb-5">Book your first appointment to get started</p>
+            <a href="{{ route('appointments.create') }}">
+                <x-primary-button type="button">Book now</x-primary-button>
+            </a>
         </div>
-    </div>
+        @endif
+    </x-card>
 </x-app-layout>

@@ -1,68 +1,97 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Enums\AppointmentStatus;
+use App\Exceptions\SlotUnavailableException;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Service;
+use App\Services\AppointmentService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class AppointmentController extends Controller
 {
-    public function index(): View {
+    public function __construct(private readonly AppointmentService $service) {}
+
+    public function index(): View
+    {
+        Gate::authorize('viewAny', Appointment::class);
+
         return view('appointments.index', [
-            'appointments' => request()->user()->appointments()->with('service')->latest('scheduled_at')->get()
+            'appointments' => $this->service->getAppointmentsForUser(auth()->id()),
         ]);
     }
 
-    public function create(): View {
-        return view('appointments.create', [
-            'services' => Service::all()
-        ]);
+    public function create(): View
+    {
+        Gate::authorize('create', Appointment::class);
+
+        $services = Service::all();
+
+        $servicesJson = $services->map(fn($s) => [
+            'id'        => $s->id,
+            'name'      => $s->name,
+            'address'   => $s->address,
+            'latitude'  => $s->latitude  ? (float) $s->latitude  : null,
+            'longitude' => $s->longitude ? (float) $s->longitude : null,
+        ])->values();
+
+        return view('appointments.create', compact('services', 'servicesJson'));
     }
 
-    public function store(StoreAppointmentRequest $request): RedirectResponse {
-        $service = Service::findOrFail((int) $request->validated('service_id'));
-        $scheduledAt = Carbon::parse($request->validated('scheduled_at'));
-        $endTime = $scheduledAt->copy()->addMinutes($service->duration_minutes);
+    public function store(StoreAppointmentRequest $request): RedirectResponse
+    {
+        Gate::authorize('create', Appointment::class);
 
-        // Conflict Detection Logic (MVP)
-        $appointmentsOfDay = Appointment::with('service')
-            ->where('service_id', $service->id)
-            ->where('status', AppointmentStatus::Booked->value)
-            ->whereDate('scheduled_at', $scheduledAt->toDateString())
-            ->get();
-
-        foreach ($appointmentsOfDay as $appt) {
-            $apptStart = Carbon::parse($appt->scheduled_at);
-            $apptEnd = $apptStart->copy()->addMinutes($appt->service->duration_minutes);
-
-            // Check if times overlap
-            if ($scheduledAt->lt($apptEnd) && $endTime->gt($apptStart)) {
-                return back()->withInput()->withErrors([
-                    'scheduled_at' => __('This time slot conflicts with an existing booking.')
-                ]);
-            }
+        try {
+            $this->service->book(
+                userId:      $request->user()->id,
+                serviceId:   (int) $request->validated('service_id'),
+                scheduledAt: Carbon::parse($request->validated('scheduled_at')),
+                notes:       $request->validated('notes'),
+            );
+        } catch (SlotUnavailableException $e) {
+            return back()->withInput()->withErrors(['scheduled_at' => $e->getMessage()]);
         }
 
-        $request->user()->appointments()->create([
-            'service_id' => $service->id,
-            'scheduled_at' => $scheduledAt,
-            'status' => AppointmentStatus::Booked->value,
-        ]);
-
-        return redirect()->route('appointments.index')->with('success', 'Appointment booked successfully.');
+        return redirect()->route('appointments.index')
+            ->with('success', 'Appointment booked successfully.');
     }
-    
-    public function destroy(Appointment $appointment): RedirectResponse {
-        if ($appointment->user_id !== request()->user()->id) {
-            abort(403);
-        }
-        
-        $appointment->update(['status' => AppointmentStatus::Cancelled->value]);
+
+    public function destroy(Appointment $appointment): RedirectResponse
+    {
+        Gate::authorize('cancel', $appointment);
+
+        $this->service->cancel($appointment);
+
         return back()->with('success', 'Appointment cancelled.');
+    }
+
+    // ── Admin ─────────────────────────────────────────────────────────────────
+
+    public function adminIndex(): View
+    {
+        Gate::authorize('admin');
+
+        return view('appointments.admin', [
+            'appointments' => Appointment::with(['service', 'user'])
+                ->latest('scheduled_at')
+                ->get(),
+        ]);
+    }
+
+    public function complete(Appointment $appointment): RedirectResponse
+    {
+        Gate::authorize('admin');
+
+        $appointment->update(['status' => AppointmentStatus::Completed->value]);
+
+        return back()->with('success', 'Appointment marked as completed.');
     }
 }
