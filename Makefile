@@ -1,4 +1,4 @@
-.PHONY: help build up down restart migrate seed fresh test shell psql logs destroy
+.PHONY: help build up down restart migrate seed fresh shell psql logs destroy
 
 help: ## Show available commands
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  make %-15s %s\n", $$1, $$2}'
@@ -39,9 +39,6 @@ seed: ## Seed database
 
 fresh: ## Reset database (migrate:fresh + seed)
 	docker compose exec app php artisan migrate:fresh --seed
-
-test: ## Run tests
-	docker compose exec app php artisan test
 
 shell: ## Shell into app container
 	docker compose exec app bash
