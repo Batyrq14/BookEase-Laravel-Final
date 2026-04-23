@@ -1,7 +1,7 @@
 <section>
     <div class="mb-6">
-        <h2 class="text-base font-semibold text-white">Profile Information</h2>
-        <p class="text-sm text-slate-400 mt-0.5">Update your name and email address.</p>
+        <h2 class="text-base font-semibold text-slate-900">Profile Information</h2>
+        <p class="text-sm text-slate-500 mt-0.5">Update your name and email address.</p>
     </div>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
@@ -33,26 +33,26 @@
             <x-input-error :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div class="mt-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-400">
+                <div class="mt-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-700">
                     Your email is unverified.
                     <button form="send-verification"
-                            class="underline hover:text-amber-300 transition-colors ms-1">
+                            class="underline hover:text-amber-800 transition-colors ms-1">
                         Resend verification email
                     </button>
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-1 text-emerald-400">Verification link sent!</p>
+                        <p class="mt-1 text-emerald-600">Verification link sent!</p>
                     @endif
                 </div>
             @endif
         </div>
 
-        <div class="flex items-center gap-4 pt-2 border-t border-slate-700/60">
+        <div class="flex items-center gap-4 pt-2 border-t border-slate-100">
             <x-primary-button>Save Changes</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition
                    x-init="setTimeout(() => show = false, 2500)"
-                   class="text-sm text-emerald-400 font-medium">
+                   class="text-sm text-emerald-600 font-medium">
                     Saved successfully.
                 </p>
             @endif

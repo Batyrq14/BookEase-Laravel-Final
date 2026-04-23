@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="text-xl font-bold text-white">Profile Settings</h1>
-        <p class="text-sm text-slate-400 mt-0.5">Manage your account details and security</p>
+        <h1 class="text-xl font-bold text-slate-900">Profile Settings</h1>
+        <p class="text-sm text-slate-500 mt-0.5">Manage your account details and security</p>
     </x-slot>
 
     <div class="max-w-2xl space-y-6">

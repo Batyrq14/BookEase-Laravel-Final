@@ -55,7 +55,6 @@
                     </div>
                 </div>
 
-                {{-- Location Section --}}
                 <div class="pt-2 border-t border-slate-100">
                     <p class="text-sm font-semibold text-slate-900 mb-1">Location <span class="text-slate-400 font-normal">(optional)</span></p>
                     <p class="text-xs text-slate-400 mb-4">Drag the pin on the map or click to set the exact spot. Clients will see this when booking.</p>

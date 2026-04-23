@@ -42,7 +42,6 @@
                     <x-input-error :messages="$errors->get('service_id')" />
                 </div>
 
-                {{-- Service location map --}}
                 <div x-show="hasLocation" x-cloak class="rounded-xl overflow-hidden border border-slate-200">
                     <div class="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-b border-slate-200">
                         <svg class="w-4 h-4 text-indigo-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +119,6 @@ function bookingForm(services) {
         onServiceChange() {
             this.$nextTick(() => {
                 if (!this.hasLocation) return;
-
                 const lat = this.selectedService.latitude;
                 const lng = this.selectedService.longitude;
 

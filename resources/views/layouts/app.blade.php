@@ -38,25 +38,19 @@
                     <div class="hidden md:flex items-center gap-0.5">
                         <a href="{{ route('dashboard') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('dashboard')
-                                      ? 'text-indigo-600 bg-indigo-50'
-                                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('dashboard') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Dashboard
                         </a>
 
                         @can('admin')
                         <a href="{{ route('services.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('services.*')
-                                      ? 'text-indigo-600 bg-indigo-50'
-                                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('services.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Services
                         </a>
                         <a href="{{ route('admin.appointments.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('admin.appointments.*')
-                                      ? 'text-indigo-600 bg-indigo-50'
-                                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('admin.appointments.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Appointments
                         </a>
                         @endcan
@@ -64,9 +58,7 @@
                         @can('client')
                         <a href="{{ route('appointments.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('appointments.*')
-                                      ? 'text-indigo-600 bg-indigo-50'
-                                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('appointments.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             My Appointments
                         </a>
                         @endcan

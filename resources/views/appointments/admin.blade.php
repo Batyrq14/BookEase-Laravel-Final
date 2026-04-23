@@ -5,7 +5,6 @@
                 <h1 class="text-xl font-bold text-slate-900">All Appointments</h1>
                 <p class="text-sm text-slate-500 mt-0.5">Every booking across all clients</p>
             </div>
-            {{-- Quick stats --}}
             <div class="hidden sm:flex items-center gap-6 text-sm">
                 @php
                     $total     = $appointments->count();
