@@ -24,6 +24,6 @@ class Author extends Model
 
     public function fullName(): string
     {
-        return $this->name . ' ' . $this->surname;
+        return $this->name.' '.$this->surname;
     }
 }

@@ -24,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Gate::define('admin', fn(User $user) => $user->isAdmin());
-        Gate::define('client', fn(User $user) => $user->isClient());
+        Gate::define('admin', fn (User $user) => $user->isAdmin());
+        Gate::define('client', fn (User $user) => $user->isClient());
 
         Gate::policy(Appointment::class, AppointmentPolicy::class);
     }

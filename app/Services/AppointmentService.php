@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-
 use App\Contracts\Repositories\AppointmentRepositoryInterface;
 use App\Enums\AppointmentStatus;
 use App\Events\AppointmentBooked;
@@ -64,9 +63,9 @@ class AppointmentService
             'status' => AppointmentStatus::Booked->value,
             'notes' => $notes,
         ]);
-    AppointmentBooked::dispatch($appointment->load(['user', 'service']));
+        AppointmentBooked::dispatch($appointment->load(['user', 'service']));
 
-    return $appointment;
+        return $appointment;
     }
 
     /**

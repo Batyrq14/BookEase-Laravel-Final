@@ -7,9 +7,10 @@ use App\Enums\AppointmentStatus;
 use App\Exceptions\SlotUnavailableException;
 use App\Models\Appointment;
 use App\Models\Service;
+use App\Models\User;
 use App\Services\AppointmentService;
 use Illuminate\Support\Carbon;
-use Mockery\MockInterface;
+use Illuminate\Support\Facades\Event;
 
 it('calculates end time correctly', function () {
     $service = Mockery::mock(AppointmentRepositoryInterface::class);
@@ -41,6 +42,8 @@ it('throws SlotUnavailableException when overlap is detected', function () {
 })->throws(SlotUnavailableException::class);
 
 it('passes ends_at to repository when booking', function () {
+    Event::fake();
+
     $service = Service::factory()->create(['duration_minutes' => 90]);
 
     $scheduledAt = Carbon::parse('2026-05-01 10:00:00');
@@ -57,13 +60,19 @@ it('passes ends_at to repository when booking', function () {
         })
         ->andReturn(false);
 
-    $fakeAppointment = new Appointment([
-        'user_id' => 1,
+    $fakeUser = User::factory()->create(['id' => 1]);
+
+    $fakeAppointment = clone new Appointment([
+        'user_id' => $fakeUser->id,
         'service_id' => $service->id,
         'scheduled_at' => $scheduledAt,
         'ends_at' => $expectedEnd,
         'status' => AppointmentStatus::Booked->value,
     ]);
+
+    // Setting an ID manually prevents missing model errors during relationship loading / event serialization
+    $fakeAppointment->setAttribute('id', 999);
+    $fakeAppointment->exists = true;
 
     $mockRepo->shouldReceive('createForUser')
         ->once()

@@ -7,8 +7,8 @@ namespace App\Listeners;
 use App\Events\AppointmentBooked;
 use App\Mail\AppointmentConfirmationMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendAppointmentConfirmation implements ShouldQueue
 {
