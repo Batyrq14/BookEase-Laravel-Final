@@ -23,6 +23,14 @@ class AppointmentService
         return $this->appointments->allForUser($userId);
     }
 
+    public function getBookedSlotsForMonth(int $serviceId, Carbon $month): Collection
+    {
+        $start = $month->copy()->startOfMonth()->startOfDay();
+        $end = $month->copy()->endOfMonth()->endOfDay();
+
+        return $this->appointments->bookedForServiceInRange($serviceId, $start, $end);
+    }
+
     /**
      * Book a service slot for a user.
      *
@@ -35,10 +43,10 @@ class AppointmentService
         $this->ensureSlotAvailable($service, $scheduledAt);
 
         return $this->appointments->createForUser($userId, [
-            'service_id'   => $service->id,
+            'service_id' => $service->id,
             'scheduled_at' => $scheduledAt,
-            'status'       => AppointmentStatus::Booked->value,
-            'notes'        => $notes,
+            'status' => AppointmentStatus::Booked->value,
+            'notes' => $notes,
         ]);
     }
 
@@ -60,7 +68,7 @@ class AppointmentService
             ->bookedForServiceOnDate($service->id, $requestedStart)
             ->first(function (Appointment $existing) use ($requestedStart, $requestedEnd): bool {
                 $existingStart = Carbon::parse($existing->scheduled_at);
-                $existingEnd   = $existingStart->copy()->addMinutes($existing->service->duration_minutes);
+                $existingEnd = $existingStart->copy()->addMinutes($existing->service->duration_minutes);
 
                 return $requestedStart->lt($existingEnd) && $requestedEnd->gt($existingStart);
             });

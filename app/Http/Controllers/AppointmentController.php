@@ -32,14 +32,16 @@ class AppointmentController extends Controller
     {
         Gate::authorize('create', Appointment::class);
 
-        $services = Service::all();
+        $services = Service::query()->orderBy('name')->get();
 
-        $servicesJson = $services->map(fn($s) => [
-            'id'        => $s->id,
-            'name'      => $s->name,
-            'address'   => $s->address,
-            'latitude'  => $s->latitude  ? (float) $s->latitude  : null,
-            'longitude' => $s->longitude ? (float) $s->longitude : null,
+        $servicesJson = $services->map(fn ($service) => [
+            'id' => $service->id,
+            'name' => $service->name,
+            'price' => number_format((float) $service->price, 2, '.', ''),
+            'duration_minutes' => $service->duration_minutes,
+            'address' => $service->address,
+            'latitude' => $service->latitude ? (float) $service->latitude : null,
+            'longitude' => $service->longitude ? (float) $service->longitude : null,
         ])->values();
 
         return view('appointments.create', compact('services', 'servicesJson'));
@@ -51,10 +53,10 @@ class AppointmentController extends Controller
 
         try {
             $this->service->book(
-                userId:      $request->user()->id,
-                serviceId:   (int) $request->validated('service_id'),
+                userId: $request->user()->id,
+                serviceId: (int) $request->validated('service_id'),
                 scheduledAt: Carbon::parse($request->validated('scheduled_at')),
-                notes:       $request->validated('notes'),
+                notes: $request->validated('notes'),
             );
         } catch (SlotUnavailableException $e) {
             return back()->withInput()->withErrors(['scheduled_at' => $e->getMessage()]);
@@ -72,8 +74,6 @@ class AppointmentController extends Controller
 
         return back()->with('success', 'Appointment cancelled.');
     }
-
-    // ── Admin ─────────────────────────────────────────────────────────────────
 
     public function adminIndex(): View
     {

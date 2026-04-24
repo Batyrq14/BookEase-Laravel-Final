@@ -19,5 +19,8 @@ interface AppointmentRepositoryInterface extends RepositoryInterface
      */
     public function bookedForServiceOnDate(int $serviceId, Carbon $date): Collection;
 
+    /** Return booked appointments for a service in a date range. */
+    public function bookedForServiceInRange(int $serviceId, Carbon $start, Carbon $end): Collection;
+
     public function createForUser(int $userId, array $data): Appointment;
 }

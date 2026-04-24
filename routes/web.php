@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppointmentApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
@@ -25,6 +26,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('can:client')->group(function () {
+        Route::get('/api/appointments/calendar', [AppointmentApiController::class, 'calendar'])->name('appointments.calendar');
         Route::resource('appointments', AppointmentController::class);
     });
 });
