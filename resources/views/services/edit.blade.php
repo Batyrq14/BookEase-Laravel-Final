@@ -36,7 +36,7 @@
                     <textarea id="description" name="description" rows="3"
                               class="block w-full bg-white border border-slate-300 text-slate-900 placeholder-slate-400
                                      rounded-xl px-4 py-2.5 text-sm transition-colors resize-none
-                                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500">{{ old('description', $service->description) }}</textarea>
+                                     focus:outline-none focus:ring-2 focus:ring-slate-500/30 focus:border-slate-500">{{ old('description', $service->description) }}</textarea>
                     <x-input-error :messages="$errors->get('description')" />
                 </div>
 

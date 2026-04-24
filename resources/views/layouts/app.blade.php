@@ -24,33 +24,33 @@
                 {{-- Logo + Desktop Links --}}
                 <div class="flex items-center gap-8">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-600/20">
+                        <div class="w-8 h-8 rounded-xl bg-slate-600 flex items-center justify-center shadow-md shadow-slate-600/20">
                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                             </svg>
                         </div>
                         <span class="text-[17px] font-bold tracking-tight text-slate-900">
-                            Book<span class="text-indigo-600">Ease</span>
+                            Book<span class="text-slate-600">Ease</span>
                         </span>
                     </a>
 
                     <div class="hidden md:flex items-center gap-0.5">
                         <a href="{{ route('dashboard') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('dashboard') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('dashboard') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Dashboard
                         </a>
 
                         @can('admin')
                         <a href="{{ route('services.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('services.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('services.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Services
                         </a>
                         <a href="{{ route('admin.appointments.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('admin.appointments.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('admin.appointments.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Appointments
                         </a>
                         @endcan
@@ -58,7 +58,7 @@
                         @can('client')
                         <a href="{{ route('appointments.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('appointments.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('appointments.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             My Appointments
                         </a>
                         @endcan
@@ -71,8 +71,8 @@
                     <div class="relative" x-data="{ profileOpen: false }" @click.outside="profileOpen = false">
                         <button @click="profileOpen = !profileOpen"
                                 class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border transition-all duration-200
-                                       bg-white border-slate-200 hover:border-indigo-300 hover:bg-slate-50">
-                            <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+                                       bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50">
+                            <div class="w-7 h-7 rounded-lg bg-slate-600 flex items-center justify-center">
                                 <span class="text-[11px] font-bold text-white">
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </span>
@@ -159,25 +159,25 @@
             <div class="px-4 py-3 space-y-0.5">
                 <a href="{{ route('dashboard') }}"
                    class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
-                          {{ request()->routeIs('dashboard') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                          {{ request()->routeIs('dashboard') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     Dashboard
                 </a>
                 @can('admin')
                 <a href="{{ route('services.index') }}"
                    class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
-                          {{ request()->routeIs('services.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                          {{ request()->routeIs('services.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     Services
                 </a>
                 <a href="{{ route('admin.appointments.index') }}"
                    class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
-                          {{ request()->routeIs('admin.appointments.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                          {{ request()->routeIs('admin.appointments.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     Appointments
                 </a>
                 @endcan
                 @can('client')
                 <a href="{{ route('appointments.index') }}"
                    class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
-                          {{ request()->routeIs('appointments.*') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                          {{ request()->routeIs('appointments.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     My Appointments
                 </a>
                 @endcan
@@ -186,7 +186,7 @@
             @auth
             <div class="border-t border-slate-200 px-4 py-4">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center">
+                    <div class="w-9 h-9 rounded-xl bg-slate-600 flex items-center justify-center">
                         <span class="text-sm font-bold text-white">
                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                         </span>

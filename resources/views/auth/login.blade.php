@@ -19,7 +19,7 @@
                 <x-input-label for="password" :value="__('Password')" class="mb-0" />
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}"
-                       class="text-xs text-indigo-600 hover:text-indigo-700 transition-colors font-medium">
+                       class="text-xs text-slate-600 hover:text-slate-700 transition-colors font-medium">
                         Forgot password?
                     </a>
                 @endif
@@ -31,7 +31,7 @@
 
         <div class="flex items-center gap-2.5">
             <input id="remember_me" type="checkbox" name="remember"
-                   class="w-4 h-4 rounded bg-white border-slate-300 text-indigo-600 focus:ring-indigo-500/30 focus:ring-offset-0">
+                   class="w-4 h-4 rounded bg-white border-slate-300 text-slate-600 focus:ring-slate-500/30 focus:ring-offset-0">
             <label for="remember_me" class="text-sm text-slate-600">Remember me</label>
         </div>
 
@@ -39,7 +39,7 @@
 
         <p class="text-center text-sm text-slate-500">
             Don't have an account?
-            <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
+            <a href="{{ route('register') }}" class="text-slate-600 hover:text-slate-700 font-medium transition-colors">
                 Create one free
             </a>
         </p>

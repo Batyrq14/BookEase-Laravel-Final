@@ -36,12 +36,12 @@
                     <td class="px-6 py-4 text-slate-500 max-w-xs truncate">{{ $service->description ?? '—' }}</td>
                     <td class="px-6 py-4 text-slate-600">{{ $service->duration_minutes }} min</td>
                     <td class="px-6 py-4">
-                        <span class="text-indigo-600 font-semibold">${{ number_format($service->price, 2) }}</span>
+                        <span class="text-slate-600 font-semibold">${{ number_format($service->price, 2) }}</span>
                     </td>
                     <td class="px-6 py-4">
                         @if($service->address)
                             <span class="inline-flex items-center gap-1 text-xs text-slate-500">
-                                <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>

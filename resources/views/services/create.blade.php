@@ -36,7 +36,7 @@
                               placeholder="Briefly describe what's included..."
                               class="block w-full bg-white border border-slate-300 text-slate-900 placeholder-slate-400
                                      rounded-xl px-4 py-2.5 text-sm transition-colors resize-none
-                                     focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500">{{ old('description') }}</textarea>
+                                     focus:outline-none focus:ring-2 focus:ring-slate-500/30 focus:border-slate-500">{{ old('description') }}</textarea>
                     <x-input-error :messages="$errors->get('description')" />
                 </div>
 
@@ -70,7 +70,7 @@
                     <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
 
                     <div id="service-map" class="rounded-xl overflow-hidden border border-slate-200" style="height: 280px; z-index: 1;"></div>
-                    <p class="text-xs text-slate-400 mt-2">Drag the indigo marker to your exact location.</p>
+                    <p class="text-xs text-slate-400 mt-2">Drag the slate marker to your exact location.</p>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">

@@ -37,7 +37,7 @@
 
         <p class="text-center text-sm text-slate-500">
             Already have an account?
-            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
+            <a href="{{ route('login') }}" class="text-slate-600 hover:text-slate-700 font-medium transition-colors">
                 Sign in
             </a>
         </p>
