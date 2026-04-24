@@ -25,10 +25,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/admin/appointments/{appointment}/complete', [AppointmentController::class, 'complete'])->name('admin.appointments.complete');
     });
 
-    Route::middleware('can:client')->group(function () {
-        Route::get('/api/appointments/calendar', [AppointmentApiController::class, 'calendar'])->name('appointments.calendar');
-        Route::resource('appointments', AppointmentController::class);
-    });
+    Route::get('/api/appointments/calendar', [AppointmentApiController::class, 'calendar'])->name('appointments.calendar');
+    Route::resource('appointments', AppointmentController::class);
 });
 
 require __DIR__.'/auth.php';

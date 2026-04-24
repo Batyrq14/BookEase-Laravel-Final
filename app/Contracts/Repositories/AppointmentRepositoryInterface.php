@@ -22,5 +22,15 @@ interface AppointmentRepositoryInterface extends RepositoryInterface
     /** Return booked appointments for a service in a date range. */
     public function bookedForServiceInRange(int $serviceId, Carbon $start, Carbon $end): Collection;
 
+    /**
+     * Check whether any existing booked appointment for the given service
+     * overlaps the [start, end) time range.
+     *
+     * Uses a database-level query to avoid race conditions and O(n) scanning.
+     *
+     * @param  int|null  $excludeAppointmentId  Appointment ID to exclude (for reschedule operations).
+     */
+    public function hasOverlappingAppointment(int $serviceId, Carbon $start, Carbon $end, ?int $excludeAppointmentId = null): bool;
+
     public function createForUser(int $userId, array $data): Appointment;
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Exceptions\SlotUnavailableException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppointmentCalendarRequest;
 use App\Http\Requests\StoreAppointmentRequest;
@@ -17,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 
 class AppointmentApiController extends Controller
 {
@@ -50,18 +48,13 @@ class AppointmentApiController extends Controller
     {
         Gate::authorize('create', Appointment::class);
 
-        try {
-            $appointment = $this->service->book(
-                userId: $request->user()->id,
-                serviceId: (int) $request->validated('service_id'),
-                scheduledAt: Carbon::parse($request->validated('scheduled_at')),
-                notes: $request->validated('notes'),
-            );
-        } catch (SlotUnavailableException $exception) {
-            throw ValidationException::withMessages([
-                'scheduled_at' => $exception->getMessage(),
-            ]);
-        }
+        // SlotUnavailableException self-renders as 409 Conflict via its render() method.
+        $appointment = $this->service->book(
+            userId: $request->user()->id,
+            serviceId: (int) $request->validated('service_id'),
+            scheduledAt: Carbon::parse($request->validated('scheduled_at')),
+            notes: $request->validated('notes'),
+        );
 
         return AppointmentResource::make($appointment->load('service'))
             ->response()

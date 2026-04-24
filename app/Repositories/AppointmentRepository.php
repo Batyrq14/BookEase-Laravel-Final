@@ -44,6 +44,27 @@ class AppointmentRepository extends BaseRepository implements AppointmentReposit
             ->get();
     }
 
+    /**
+     * Database-level overlap check using the `overlapping` Eloquent scope.
+     *
+     * The query leverages the composite index (service_id, status, scheduled_at, ends_at)
+     * and returns a simple boolean — no models are hydrated.
+     */
+    public function hasOverlappingAppointment(
+        int $serviceId,
+        Carbon $start,
+        Carbon $end,
+        ?int $excludeAppointmentId = null,
+    ): bool {
+        $query = Appointment::query()->overlapping($serviceId, $start, $end);
+
+        if ($excludeAppointmentId !== null) {
+            $query->where('id', '!=', $excludeAppointmentId);
+        }
+
+        return $query->exists();
+    }
+
     public function createForUser(int $userId, array $data): Appointment
     {
         /** @var Appointment */
