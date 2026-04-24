@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+
 use App\Contracts\Repositories\AppointmentRepositoryInterface;
 use App\Enums\AppointmentStatus;
+use App\Events\AppointmentBooked;
 use App\Exceptions\SlotUnavailableException;
 use App\Models\Appointment;
 use App\Models\Service;
@@ -55,13 +57,16 @@ class AppointmentService
 
         $this->ensureSlotAvailable($service->id, $scheduledAt, $endsAt);
 
-        return $this->appointments->createForUser($userId, [
+        $appointment = $this->appointments->createForUser($userId, [
             'service_id' => $service->id,
             'scheduled_at' => $scheduledAt,
             'ends_at' => $endsAt,
             'status' => AppointmentStatus::Booked->value,
             'notes' => $notes,
         ]);
+    AppointmentBooked::dispatch($appointment->load(['user', 'service']));
+
+    return $appointment;
     }
 
     /**
