@@ -56,9 +56,14 @@
                         @endcan
 
                         @can('client')
+                        <a href="{{ route('appointments.create') }}"
+                           class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
+                                  {{ request()->routeIs('appointments.create') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                            Book
+                        </a>
                         <a href="{{ route('appointments.index') }}"
                            class="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors duration-150
-                                  {{ request()->routeIs('appointments.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                  {{ request()->routeIs('appointments.index') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             My Appointments
                         </a>
                         @endcan
@@ -175,9 +180,14 @@
                 </a>
                 @endcan
                 @can('client')
+                <a href="{{ route('appointments.create') }}"
+                   class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
+                          {{ request()->routeIs('appointments.create') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                    Book Appointment
+                </a>
                 <a href="{{ route('appointments.index') }}"
                    class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors
-                          {{ request()->routeIs('appointments.*') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                          {{ request()->routeIs('appointments.index') ? 'text-slate-600 bg-slate-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                     My Appointments
                 </a>
                 @endcan

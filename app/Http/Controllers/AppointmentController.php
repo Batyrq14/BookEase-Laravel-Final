@@ -11,6 +11,7 @@ use App\Models\Appointment;
 use App\Models\Service;
 use App\Services\AppointmentService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
@@ -34,15 +35,7 @@ class AppointmentController extends Controller
 
         $services = Service::query()->orderBy('name')->get();
 
-        $servicesJson = $services->map(fn ($service) => [
-            'id' => $service->id,
-            'name' => $service->name,
-            'price' => number_format((float) $service->price, 2, '.', ''),
-            'duration_minutes' => $service->duration_minutes,
-            'address' => $service->address,
-            'latitude' => $service->latitude ? (float) $service->latitude : null,
-            'longitude' => $service->longitude ? (float) $service->longitude : null,
-        ])->values();
+        $servicesJson = $services->map(fn (Service $service) => $this->mapServiceForCalendar($service))->values();
 
         return view('appointments.create', compact('services', 'servicesJson'));
     }
@@ -75,6 +68,53 @@ class AppointmentController extends Controller
         return back()->with('success', 'Appointment cancelled.');
     }
 
+    public function reschedule(Appointment $appointment): RedirectResponse|View
+    {
+        Gate::authorize('update', $appointment);
+
+        if ($appointment->status !== AppointmentStatus::Booked->value) {
+            return redirect()->route('appointments.index')
+                ->with('error', 'Only booked appointments can be rescheduled.');
+        }
+
+        $appointment->load('service');
+
+        $servicesJson = collect([
+            $this->mapServiceForCalendar($appointment->service),
+        ]);
+
+        return view('appointments.reschedule', compact('appointment', 'servicesJson'));
+    }
+
+    public function performReschedule(Request $request, Appointment $appointment): RedirectResponse
+    {
+        Gate::authorize('update', $appointment);
+
+        if ($appointment->status !== AppointmentStatus::Booked->value) {
+            return redirect()->route('appointments.index')
+                ->with('error', 'Only booked appointments can be rescheduled.');
+        }
+
+        $validated = $request->validate([
+            'scheduled_at' => ['required', 'date', 'after:now'],
+        ]);
+
+        $newDate = Carbon::parse($validated['scheduled_at']);
+
+        if ($newDate->isWeekend()) {
+            return back()->withInput()->withErrors(['scheduled_at' => 'Appointments cannot be booked on weekends.']);
+        }
+
+        try {
+            $this->service->reschedule($appointment, $newDate);
+        } catch (SlotUnavailableException $e) {
+            return back()->withInput()->withErrors(['scheduled_at' => $e->getMessage()]);
+        }
+
+        return redirect()->route('appointments.index')
+            ->with('success', 'Appointment rescheduled successfully.');
+    }
+
     public function adminIndex(): View
     {
         Gate::authorize('admin');
@@ -93,5 +133,18 @@ class AppointmentController extends Controller
         $appointment->update(['status' => AppointmentStatus::Completed->value]);
 
         return back()->with('success', 'Appointment marked as completed.');
+    }
+
+    private function mapServiceForCalendar(Service $service): array
+    {
+        return [
+            'id' => $service->id,
+            'name' => $service->name,
+            'price' => number_format((float) $service->price, 2, '.', ''),
+            'duration_minutes' => $service->duration_minutes,
+            'address' => $service->address,
+            'latitude' => $service->latitude ? (float) $service->latitude : null,
+            'longitude' => $service->longitude ? (float) $service->longitude : null,
+        ];
     }
 }

@@ -57,15 +57,26 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         @if($appointment->status === 'booked')
-                        <form method="POST" action="{{ route('appointments.destroy', $appointment) }}"
-                              onsubmit="return confirm('Cancel this appointment?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                                Cancel
-                            </button>
-                        </form>
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('appointments.reschedule', $appointment) }}"
+                               class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+                                Reschedule
+                            </a>
+                            <form method="POST" action="{{ route('appointments.destroy', $appointment) }}"
+                                  onsubmit="return confirm('Cancel this appointment?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                                    Cancel
+                                </button>
+                            </form>
+                        </div>
+                        @elseif($appointment->status === 'cancelled')
+                        <a href="{{ route('appointments.create', ['service_id' => $appointment->service_id]) }}"
+                           class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+                            Book Again
+                        </a>
                         @else
                         <span class="text-slate-300 text-xs">—</span>
                         @endif
