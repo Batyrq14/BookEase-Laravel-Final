@@ -17,12 +17,12 @@ Route::get('/dashboard', function () {
 
     if ($user->isAdmin()) {
         $stats = [
-            'total_services'    => Service::count(),
-            'total_appointments'=> Appointment::count(),
-            'today'             => Appointment::whereDate('scheduled_at', today())
-                                    ->where('status', 'booked')->count(),
-            'upcoming_week'     => Appointment::whereBetween('scheduled_at', [now(), now()->endOfWeek()])
-                                    ->where('status', 'booked')->count(),
+            'total_services' => Service::count(),
+            'total_appointments' => Appointment::count(),
+            'today' => Appointment::whereDate('scheduled_at', today())
+                ->where('status', 'booked')->count(),
+            'upcoming_week' => Appointment::whereBetween('scheduled_at', [now(), now()->endOfWeek()])
+                ->where('status', 'booked')->count(),
         ];
     } else {
         $next = Appointment::with('service')
@@ -33,10 +33,10 @@ Route::get('/dashboard', function () {
             ->first();
 
         $stats = [
-            'next'      => $next,
-            'upcoming'  => Appointment::where('user_id', $user->id)->where('status', 'booked')->where('scheduled_at', '>', now())->count(),
+            'next' => $next,
+            'upcoming' => Appointment::where('user_id', $user->id)->where('status', 'booked')->where('scheduled_at', '>', now())->count(),
             'completed' => Appointment::where('user_id', $user->id)->where('status', 'completed')->count(),
-            'total'     => Appointment::where('user_id', $user->id)->count(),
+            'total' => Appointment::where('user_id', $user->id)->count(),
         ];
     }
 
