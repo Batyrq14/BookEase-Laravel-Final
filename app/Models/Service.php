@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Category;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,7 @@ class Service extends Model
     /** @use HasFactory<ServiceFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'duration_minutes', 'price', 'address', 'latitude', 'longitude'];
+    protected $fillable = ['name', 'description', 'duration_minutes', 'price', 'address', 'latitude', 'longitude', 'category_id'];
 
     protected function casts(): array
     {
@@ -29,5 +30,24 @@ class Service extends Model
     public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        // поиск по имени
+        if (!empty($filters['search'])) {
+            $query->where('name', 'like', '%' . $filters['search'] . '%');
+        }
+
+        // фильтр по категории
+        if (!empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        return $query;
     }
 }
