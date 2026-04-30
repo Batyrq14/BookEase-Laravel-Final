@@ -19,6 +19,17 @@
                         <x-nav-link :href="route('services.index')" :active="request()->routeIs('services.*')">
                             {{ __('Services') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('providers.index')" :active="request()->routeIs('providers.*')">
+                            {{ __('Providers') }}
+                        </x-nav-link>
+                    @endcan
+                    @can('provider')
+                        <x-nav-link :href="route('provider.appointments.index')" :active="request()->routeIs('provider.appointments.*')">
+                            {{ __('My Schedule') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('services.index')" :active="request()->routeIs('services.*')">
+                            {{ __('Assigned Services') }}
+                        </x-nav-link>
                     @endcan
                     @can('client')
                         <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">
@@ -83,6 +94,17 @@
             @can('admin')
                 <x-responsive-nav-link :href="route('services.index')" :active="request()->routeIs('services.*')">
                     {{ __('Services') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('providers.index')" :active="request()->routeIs('providers.*')">
+                    {{ __('Providers') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('provider')
+                <x-responsive-nav-link :href="route('provider.appointments.index')" :active="request()->routeIs('provider.appointments.*')">
+                    {{ __('My Schedule') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('services.index')" :active="request()->routeIs('services.*')">
+                    {{ __('Assigned Services') }}
                 </x-responsive-nav-link>
             @endcan
             @can('client')

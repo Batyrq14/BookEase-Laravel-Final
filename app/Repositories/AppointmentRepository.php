@@ -25,6 +25,16 @@ class AppointmentRepository extends BaseRepository implements AppointmentReposit
             ->get();
     }
 
+    public function upcomingForProvider(int $providerId): Collection
+    {
+        return Appointment::with(['service', 'user'])
+            ->where('status', AppointmentStatus::Booked->value)
+            ->where('scheduled_at', '>=', now())
+            ->whereHas('service', fn ($query) => $query->where('provider_id', $providerId))
+            ->orderBy('scheduled_at')
+            ->get();
+    }
+
     public function bookedForServiceOnDate(int $serviceId, Carbon $date): Collection
     {
         return Appointment::with('service')

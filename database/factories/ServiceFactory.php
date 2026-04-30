@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /** @extends Factory<Service> */
@@ -19,6 +20,8 @@ class ServiceFactory extends Factory
             'description' => fake()->sentence(),
             'duration_minutes' => fake()->randomElement([30, 45, 60, 90, 120]),
             'price' => fake()->randomFloat(2, 10, 200),
+            'provider_id' => User::factory()->provider(),
+            'creator_user_id' => User::factory()->admin(),
         ];
     }
 }

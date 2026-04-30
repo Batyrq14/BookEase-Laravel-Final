@@ -28,6 +28,11 @@ class AppointmentService
         return $this->appointments->allForUser($userId);
     }
 
+    public function getUpcomingAppointmentsForProvider(int $providerId): Collection
+    {
+        return $this->appointments->upcomingForProvider($providerId);
+    }
+
     public function getBookedSlotsForMonth(int $serviceId, Carbon $month): Collection
     {
         $start = $month->copy()->startOfMonth()->startOfDay();

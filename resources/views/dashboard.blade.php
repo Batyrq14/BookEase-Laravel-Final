@@ -41,6 +41,38 @@
     </div>
     @endcan
 
+    @can('provider')
+    <div class="space-y-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <x-card>
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Assigned Services</p>
+                <p class="mt-3 text-4xl font-bold text-slate-900">{{ $stats['assigned_services'] }}</p>
+            </x-card>
+            <x-card>
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Upcoming</p>
+                <p class="mt-3 text-4xl font-bold text-slate-900">{{ $stats['upcoming'] }}</p>
+            </x-card>
+            <x-card>
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Today</p>
+                <p class="mt-3 text-4xl font-bold text-slate-900">{{ $stats['today'] }}</p>
+            </x-card>
+            <x-card>
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Completed</p>
+                <p class="mt-3 text-4xl font-bold text-slate-900">{{ $stats['completed'] }}</p>
+            </x-card>
+        </div>
+
+        <div class="flex gap-3">
+            <a href="{{ route('provider.appointments.index') }}">
+                <x-primary-button>View My Schedule</x-primary-button>
+            </a>
+            <a href="{{ route('services.index') }}">
+                <x-secondary-button>Assigned Services</x-secondary-button>
+            </a>
+        </div>
+    </div>
+    @endcan
+
     @can('client')
     {{-- ─── Client Stats ──────────────────────────────────────────── --}}
     <div class="space-y-6 max-w-3xl">

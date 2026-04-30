@@ -8,7 +8,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="space-y-5">
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-5">
         @csrf
         @method('patch')
 
@@ -25,6 +25,28 @@
                           placeholder="+1 555 000 0000" autocomplete="tel" />
             <x-input-error :messages="$errors->get('phone')" />
         </div>
+
+        @if($user->isStaff())
+        <div>
+            <x-input-label for="bio" :value="__('Professional bio')" />
+            <textarea id="bio" name="bio" rows="4"
+                      class="block w-full bg-white border border-slate-300 text-slate-900 placeholder-slate-400
+                             rounded-xl px-4 py-2.5 text-sm transition-colors resize-none
+                             focus:outline-none focus:ring-2 focus:ring-slate-500/30 focus:border-slate-500">{{ old('bio', $user->bio) }}</textarea>
+            <x-input-error :messages="$errors->get('bio')" />
+        </div>
+
+        <div>
+            <x-input-label for="profile_photo" :value="__('Profile photo')" />
+            @if($user->profile_photo_path)
+                <img src="{{ asset('storage/'.$user->profile_photo_path) }}" alt="{{ $user->name }}"
+                     class="mb-3 h-16 w-16 rounded-full object-cover border border-slate-200">
+            @endif
+            <input id="profile_photo" name="profile_photo" type="file" accept="image/*"
+                   class="block w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-600">
+            <x-input-error :messages="$errors->get('profile_photo')" />
+        </div>
+        @endif
 
         <div>
             <x-input-label for="email" :value="__('Email address')" />

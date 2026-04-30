@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Category;
 use Database\Factories\ServiceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
@@ -15,7 +15,18 @@ class Service extends Model
     /** @use HasFactory<ServiceFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'duration_minutes', 'price', 'address', 'latitude', 'longitude', 'category_id'];
+    protected $fillable = [
+        'name',
+        'description',
+        'duration_minutes',
+        'price',
+        'provider_id',
+        'creator_user_id',
+        'address',
+        'latitude',
+        'longitude',
+        'category_id',
+    ];
 
     protected function casts(): array
     {
@@ -31,9 +42,20 @@ class Service extends Model
     {
         return $this->hasMany(Appointment::class);
     }
-    public function category()
+
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function provider(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'provider_id');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'creator_user_id');
     }
 
     public function scopeFilter($query, array $filters)

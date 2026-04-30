@@ -27,6 +27,20 @@
                 </div>
 
                 <div>
+                    <x-input-label for="provider_id" :value="__('Assigned provider')" />
+                    <select id="provider_id" name="provider_id"
+                            class="block w-full rounded-xl border-slate-300 text-sm focus:border-slate-500 focus:ring-slate-500/30">
+                        <option value="">Choose a provider</option>
+                        @foreach($providers as $provider)
+                            <option value="{{ $provider->id }}" @selected(old('provider_id') == $provider->id)>
+                                {{ $provider->name }} · {{ $provider->email }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('provider_id')" />
+                </div>
+
+                <div>
                     <x-input-label for="description" :value="__('Description')" />
                     <textarea id="description" name="description" rows="3"
                               placeholder="Briefly describe what's included..."

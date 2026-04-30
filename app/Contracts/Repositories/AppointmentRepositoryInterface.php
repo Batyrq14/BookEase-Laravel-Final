@@ -13,6 +13,9 @@ interface AppointmentRepositoryInterface extends RepositoryInterface
     /** Return all appointments for a given user, eager-loading service. */
     public function allForUser(int $userId): Collection;
 
+    /** Return upcoming booked appointments assigned to a provider. */
+    public function upcomingForProvider(int $providerId): Collection;
+
     /**
      * Return booked appointments for a service on a specific date,
      * eager-loading service (needed for duration_minutes).

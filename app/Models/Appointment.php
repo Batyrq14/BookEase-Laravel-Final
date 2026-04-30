@@ -48,6 +48,13 @@ class Appointment extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function belongsToProvider(User $provider): bool
+    {
+        $this->loadMissing('service');
+
+        return $this->service?->provider_id === $provider->id;
+    }
+
     // ──────────────────────────────────────────────
     //  Scopes
     // ──────────────────────────────────────────────

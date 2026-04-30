@@ -3,8 +3,11 @@
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-xl font-bold text-slate-900">Services</h1>
-                <p class="text-sm text-slate-500 mt-0.5">Manage the services available for booking</p>
+                <p class="text-sm text-slate-500 mt-0.5">
+                    {{ auth()->user()->isAdmin() ? 'Manage the services available for booking' : 'Services currently assigned to you' }}
+                </p>
             </div>
+            @can('create', \App\Models\Service::class)
             <a href="{{ route('services.create') }}">
                 <x-primary-button type="button">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -13,6 +16,7 @@
                     New Service
                 </x-primary-button>
             </a>
+            @endcan
         </div>
     </x-slot>
 
@@ -25,6 +29,7 @@
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
+                    <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Provider</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Location</th>
                     <th class="px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -37,6 +42,14 @@
                     <td class="px-6 py-4 text-slate-600">{{ $service->duration_minutes }} min</td>
                     <td class="px-6 py-4">
                         <span class="text-slate-600 font-semibold">${{ number_format($service->price, 2) }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        @if($service->provider)
+                            <p class="font-medium text-slate-900">{{ $service->provider->name }}</p>
+                            <p class="text-xs text-slate-500">{{ $service->provider->email }}</p>
+                        @else
+                            <span class="text-slate-300 text-xs">Unassigned</span>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
                         @if($service->address)
@@ -53,10 +66,13 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-2">
+                            @can('update', $service)
                             <a href="{{ route('services.edit', $service) }}"
                                class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
                                 Edit
                             </a>
+                            @endcan
+                            @can('delete', $service)
                             <form action="{{ route('services.destroy', $service) }}" method="POST"
                                   onsubmit="return confirm('Delete this service?')">
                                 @csrf
@@ -66,6 +82,10 @@
                                     Delete
                                 </button>
                             </form>
+                            @endcan
+                            @cannot('update', $service)
+                                <span class="text-slate-300 text-xs">—</span>
+                            @endcannot
                         </div>
                     </td>
                 </tr>
@@ -81,10 +101,14 @@
                 </svg>
             </div>
             <p class="text-slate-700 font-semibold mb-1">No services yet</p>
-            <p class="text-slate-400 text-sm mb-5">Add your first service to start accepting bookings</p>
+            <p class="text-slate-400 text-sm mb-5">
+                {{ auth()->user()->isAdmin() ? 'Add your first service to start accepting bookings' : 'Services assigned to you will appear here.' }}
+            </p>
+            @can('create', \App\Models\Service::class)
             <a href="{{ route('services.create') }}">
                 <x-primary-button type="button">Create first service</x-primary-button>
             </a>
+            @endcan
         </div>
         @endif
     </x-card>

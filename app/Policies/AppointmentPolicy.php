@@ -17,17 +17,24 @@ class AppointmentPolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->isClient() || $user->isProvider();
     }
 
     public function view(User $user, Appointment $appointment): bool
     {
-        return $user->id === $appointment->user_id;
+        if ($user->isClient()) {
+            return $user->id === $appointment->user_id;
+        }
+
+        return $user->isProvider()
+            && $appointment->belongsToProvider($user)
+            && $appointment->status === AppointmentStatus::Booked->value
+            && $appointment->scheduled_at->isFuture();
     }
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->isClient();
     }
 
     public function cancel(User $user, Appointment $appointment): bool
@@ -38,11 +45,18 @@ class AppointmentPolicy
 
     public function update(User $user, Appointment $appointment): bool
     {
-        return $user->id === $appointment->user_id;
+        return $user->isClient() && $user->id === $appointment->user_id;
     }
 
     public function delete(User $user, Appointment $appointment): bool
     {
         return false;
+    }
+
+    public function complete(User $user, Appointment $appointment): bool
+    {
+        return $user->isProvider()
+            && $appointment->belongsToProvider($user)
+            && $appointment->status === AppointmentStatus::Booked->value;
     }
 }

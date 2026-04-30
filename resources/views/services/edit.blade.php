@@ -27,6 +27,27 @@
                     <x-input-error :messages="$errors->get('name')" />
                 </div>
 
+                @if(auth()->user()->isAdmin())
+                <div>
+                    <x-input-label for="provider_id" :value="__('Assigned provider')" />
+                    <select id="provider_id" name="provider_id"
+                            class="block w-full rounded-xl border-slate-300 text-sm focus:border-slate-500 focus:ring-slate-500/30">
+                        <option value="">Choose a provider</option>
+                        @foreach($providers as $provider)
+                            <option value="{{ $provider->id }}" @selected(old('provider_id', $service->provider_id) == $provider->id)>
+                                {{ $provider->name }} · {{ $provider->email }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('provider_id')" />
+                </div>
+                @else
+                <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Assigned provider</p>
+                    <p class="mt-1 text-sm font-medium text-slate-900">{{ $service->provider?->name ?? 'Unassigned' }}</p>
+                </div>
+                @endif
+
                 <div>
                     <x-input-label for="description" :value="__('Description')" />
                     <textarea id="description" name="description" rows="3"

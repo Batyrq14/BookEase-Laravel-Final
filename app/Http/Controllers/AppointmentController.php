@@ -29,6 +29,15 @@ class AppointmentController extends Controller
         ]);
     }
 
+    public function providerIndex(): View
+    {
+        Gate::authorize('provider');
+
+        return view('appointments.provider-index', [
+            'appointments' => $this->service->getUpcomingAppointmentsForProvider(auth()->id()),
+        ]);
+    }
+
     public function create(): View
     {
         Gate::authorize('create', Appointment::class);
@@ -120,7 +129,7 @@ class AppointmentController extends Controller
         Gate::authorize('admin');
 
         return view('appointments.admin', [
-            'appointments' => Appointment::with(['service', 'user'])
+            'appointments' => Appointment::with(['service.provider', 'user'])
                 ->latest('scheduled_at')
                 ->get(),
         ]);
@@ -128,7 +137,7 @@ class AppointmentController extends Controller
 
     public function complete(Appointment $appointment): RedirectResponse
     {
-        Gate::authorize('admin');
+        Gate::authorize('complete', $appointment);
 
         $appointment->update(['status' => AppointmentStatus::Completed->value]);
 
