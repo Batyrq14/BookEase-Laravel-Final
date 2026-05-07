@@ -60,7 +60,7 @@ it('passes ends_at to repository when booking', function () {
         })
         ->andReturn(false);
 
-    $fakeUser = User::factory()->create(['id' => 1]);
+    $fakeUser = User::factory()->create();
 
     $fakeAppointment = clone new Appointment([
         'user_id' => $fakeUser->id,
@@ -76,8 +76,8 @@ it('passes ends_at to repository when booking', function () {
 
     $mockRepo->shouldReceive('createForUser')
         ->once()
-        ->withArgs(function (int $userId, array $data) use ($service, $expectedEnd) {
-            return $userId === 1
+        ->withArgs(function (int $userId, array $data) use ($fakeUser, $service, $expectedEnd) {
+            return $userId === $fakeUser->id
                 && $data['service_id'] === $service->id
                 && $data['ends_at']->eq($expectedEnd)
                 && $data['status'] === AppointmentStatus::Booked->value;
@@ -87,7 +87,7 @@ it('passes ends_at to repository when booking', function () {
     $appointmentService = new AppointmentService($mockRepo);
 
     $result = $appointmentService->book(
-        userId: 1,
+        userId: $fakeUser->id,
         serviceId: $service->id,
         scheduledAt: $scheduledAt,
     );
