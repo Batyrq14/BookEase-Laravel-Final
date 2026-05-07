@@ -30,18 +30,18 @@ class UserController extends Controller
         Gate::authorize('admin');
 
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-            'role'     => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
-            'phone'    => ['nullable', 'string', 'max:30'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'role' => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
+            'phone' => ['nullable', 'string', 'max:30'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
         User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'role'     => $validated['role'],
-            'phone'    => $validated['phone'] ?? null,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+            'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
         ]);
 
@@ -54,19 +54,19 @@ class UserController extends Controller
         Gate::authorize('admin');
 
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'role'     => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
-            'phone'    => ['nullable', 'string', 'max:30'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'role' => ['required', Rule::in(array_column(UserRole::cases(), 'value'))],
+            'phone' => ['nullable', 'string', 'max:30'],
             'password' => ['nullable', 'confirmed', Password::defaults()],
         ]);
 
-        $user->name  = $validated['name'];
+        $user->name = $validated['name'];
         $user->email = $validated['email'];
-        $user->role  = $validated['role'];
+        $user->role = $validated['role'];
         $user->phone = $validated['phone'] ?? null;
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 

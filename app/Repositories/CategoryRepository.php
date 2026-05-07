@@ -13,11 +13,12 @@ class CategoryRepository
     public function delete(Category $category): bool
     {
         if ($category->services()->exists()) {
-            throw new CategoryHasServicesException();
+            throw new CategoryHasServicesException;
         }
 
         return $category->delete();
     }
+
     public function listForFilters(): Collection
     {
         return Category::query()

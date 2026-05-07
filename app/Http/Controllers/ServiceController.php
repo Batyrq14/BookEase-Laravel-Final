@@ -9,9 +9,9 @@ use App\Http\Requests\UpdateServiceRequest;
 use App\Models\Category;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
@@ -22,10 +22,10 @@ class ServiceController extends Controller
 
         $query = Service::query()->with(['provider', 'category'])->whereNotNull('provider_id');
 
-        if (!empty($filters['search'])) {
-            $query->where('name', 'like', '%' . $filters['search'] . '%');
+        if (! empty($filters['search'])) {
+            $query->where('name', 'like', '%'.$filters['search'].'%');
         }
-        if (!empty($filters['category_id'])) {
+        if (! empty($filters['category_id'])) {
             $query->where('category_id', $filters['category_id']);
         }
 
@@ -46,10 +46,10 @@ class ServiceController extends Controller
             ? Service::query()->with(['provider', 'creator', 'category'])
             : Service::query()->with(['provider', 'creator', 'category'])->where('provider_id', $user->id);
 
-        if (!empty($filters['search'])) {
-            $query->where('name', 'like', '%' . $filters['search'] . '%');
+        if (! empty($filters['search'])) {
+            $query->where('name', 'like', '%'.$filters['search'].'%');
         }
-        if (!empty($filters['category_id'])) {
+        if (! empty($filters['category_id'])) {
             $query->where('category_id', $filters['category_id']);
         }
 

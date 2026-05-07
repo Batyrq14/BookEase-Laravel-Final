@@ -21,7 +21,7 @@ class ServiceApiController extends Controller
         $query = Service::query()->with('category')->latest();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->string('search') . '%');
+            $query->where('name', 'like', '%'.$request->string('search').'%');
         }
 
         if ($request->filled('category_id')) {

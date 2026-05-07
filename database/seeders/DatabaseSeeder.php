@@ -17,81 +17,81 @@ class DatabaseSeeder extends Seeder
     {
         // ── Admin & demo client ──────────────────────────────────────────────
         $admin = User::create([
-            'name'     => 'Admin',
-            'email'    => 'admin@bookease.com',
+            'name' => 'Admin',
+            'email' => 'admin@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Admin->value,
-            'bio'      => 'Manages providers, services and appointments.',
+            'role' => UserRole::Admin->value,
+            'bio' => 'Manages providers, services and appointments.',
         ]);
 
         User::create([
-            'name'     => 'Demo Client',
-            'email'    => 'client@bookease.com',
+            'name' => 'Demo Client',
+            'email' => 'client@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Client->value,
+            'role' => UserRole::Client->value,
         ]);
 
         // ── Categories ───────────────────────────────────────────────────────
-        $hair     = Category::create(['name' => 'Hair & Styling']);
+        $hair = Category::create(['name' => 'Hair & Styling']);
         $wellness = Category::create(['name' => 'Wellness & Spa']);
-        $fitness  = Category::create(['name' => 'Fitness & Training']);
-        $beauty   = Category::create(['name' => 'Beauty & Cosmetics']);
-        $massage  = Category::create(['name' => 'Massage Therapy']);
-        $dental   = Category::create(['name' => 'Dental Care']);
+        $fitness = Category::create(['name' => 'Fitness & Training']);
+        $beauty = Category::create(['name' => 'Beauty & Cosmetics']);
+        $massage = Category::create(['name' => 'Massage Therapy']);
+        $dental = Category::create(['name' => 'Dental Care']);
 
         // ── Providers (email slug matches category) ──────────────────────────
         $providerHair = User::create([
-            'name'     => 'Sarah Mitchell',
-            'email'    => 'hair@bookease.com',
+            'name' => 'Sarah Mitchell',
+            'email' => 'hair@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Provider->value,
-            'phone'    => '+1 555 100 0001',
-            'bio'      => 'Senior stylist with 10 years of experience in cuts, color and styling.',
+            'role' => UserRole::Provider->value,
+            'phone' => '+1 555 100 0001',
+            'bio' => 'Senior stylist with 10 years of experience in cuts, color and styling.',
         ]);
 
         $providerWellness = User::create([
-            'name'     => 'Emma Clarke',
-            'email'    => 'wellness@bookease.com',
+            'name' => 'Emma Clarke',
+            'email' => 'wellness@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Provider->value,
-            'phone'    => '+1 555 100 0002',
-            'bio'      => 'Certified esthetician specializing in anti-aging and hydrating facials.',
+            'role' => UserRole::Provider->value,
+            'phone' => '+1 555 100 0002',
+            'bio' => 'Certified esthetician specializing in anti-aging and hydrating facials.',
         ]);
 
         $providerFitness = User::create([
-            'name'     => 'Jake Torres',
-            'email'    => 'fitness@bookease.com',
+            'name' => 'Jake Torres',
+            'email' => 'fitness@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Provider->value,
-            'phone'    => '+1 555 100 0003',
-            'bio'      => 'NASM-certified personal trainer focused on strength and functional movement.',
+            'role' => UserRole::Provider->value,
+            'phone' => '+1 555 100 0003',
+            'bio' => 'NASM-certified personal trainer focused on strength and functional movement.',
         ]);
 
         $providerBeauty = User::create([
-            'name'     => 'Olivia Park',
-            'email'    => 'beauty@bookease.com',
+            'name' => 'Olivia Park',
+            'email' => 'beauty@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Provider->value,
-            'phone'    => '+1 555 100 0004',
-            'bio'      => 'Nail artist and lash technician with a flair for creative designs.',
+            'role' => UserRole::Provider->value,
+            'phone' => '+1 555 100 0004',
+            'bio' => 'Nail artist and lash technician with a flair for creative designs.',
         ]);
 
         $providerMassage = User::create([
-            'name'     => 'David Nguyen',
-            'email'    => 'massage@bookease.com',
+            'name' => 'David Nguyen',
+            'email' => 'massage@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Provider->value,
-            'phone'    => '+1 555 100 0005',
-            'bio'      => 'Licensed massage therapist skilled in Swedish, deep tissue and hot stone.',
+            'role' => UserRole::Provider->value,
+            'phone' => '+1 555 100 0005',
+            'bio' => 'Licensed massage therapist skilled in Swedish, deep tissue and hot stone.',
         ]);
 
         $providerDental = User::create([
-            'name'     => 'Dr. Lisa Chen',
-            'email'    => 'dental@bookease.com',
+            'name' => 'Dr. Lisa Chen',
+            'email' => 'dental@bookease.com',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Provider->value,
-            'phone'    => '+1 555 100 0006',
-            'bio'      => 'General dentist offering preventive care and cosmetic whitening.',
+            'role' => UserRole::Provider->value,
+            'phone' => '+1 555 100 0006',
+            'bio' => 'General dentist offering preventive care and cosmetic whitening.',
         ]);
 
         // ── Services ─────────────────────────────────────────────────────────
@@ -134,7 +134,7 @@ class DatabaseSeeder extends Seeder
         // Massage Therapy
         foreach ([
             ['Swedish Massage',    'Full-body relaxation massage.',                       60, 75.00],
-            ['Deep Tissue Massage','Targeted pressure to release chronic muscle tension.', 60, 85.00],
+            ['Deep Tissue Massage', 'Targeted pressure to release chronic muscle tension.', 60, 85.00],
             ['Hot Stone Massage',  'Heated basalt stones for deep warmth and relief.',    75, 95.00],
         ] as [$name, $desc, $mins, $price]) {
             Service::create(['name' => $name, 'description' => $desc, 'duration_minutes' => $mins, 'price' => $price, 'provider_id' => $providerMassage->id, 'creator_user_id' => $admin->id, 'category_id' => $massage->id]);

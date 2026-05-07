@@ -134,15 +134,15 @@ class AppointmentController extends Controller
 
         $query = Appointment::with(['service.provider', 'user'])->latest('scheduled_at');
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
-                $q->whereHas('user', fn ($u) => $u->where('name', 'like', '%' . $filters['search'] . '%')
-                    ->orWhere('email', 'like', '%' . $filters['search'] . '%'))
-                  ->orWhereHas('service', fn ($s) => $s->where('name', 'like', '%' . $filters['search'] . '%'));
+                $q->whereHas('user', fn ($u) => $u->where('name', 'like', '%'.$filters['search'].'%')
+                    ->orWhere('email', 'like', '%'.$filters['search'].'%'))
+                    ->orWhereHas('service', fn ($s) => $s->where('name', 'like', '%'.$filters['search'].'%'));
             });
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
@@ -153,8 +153,8 @@ class AppointmentController extends Controller
 
         return view('appointments.admin', [
             'appointments' => $query->paginate(20)->withQueryString(),
-            'filters'      => $filters,
-            'stats'        => $stats,
+            'filters' => $filters,
+            'stats' => $stats,
         ]);
     }
 

@@ -9,24 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up(): void
-{
-    Schema::table('services', function (Blueprint $table) {
-        $table->foreignId('category_id')
-            ->nullable()
-            ->constrained()
-            ->nullOnDelete();
-    });
-}
+    public function up(): void
+    {
+        Schema::table('services', function (Blueprint $table) {
+            $table->foreignId('category_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
-public function down(): void
-{
-    Schema::table('services', function (Blueprint $table) {
-        $table->dropForeign(['category_id']);
-        $table->dropColumn('category_id');
-    });
-}
+    public function down(): void
+    {
+        Schema::table('services', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+            $table->dropColumn('category_id');
+        });
+    }
 };
