@@ -35,7 +35,7 @@ it('allows an admin to create a provider account with a full staff profile', fun
         'password_confirmation' => 'password',
     ]);
 
-    $response->assertRedirect(route('providers.index'));
+    $response->assertRedirect(route('users.index'));
 
     $provider = User::query()->where('email', 'taylor.provider@example.com')->first();
 
@@ -58,7 +58,7 @@ it('allows an admin to invite a provider by email and returns an activation link
         'bio' => 'Will join next week.',
     ]);
 
-    $response->assertRedirect(route('providers.index'))
+    $response->assertRedirect(route('users.index'))
         ->assertSessionHas('invitation_link')
         ->assertSessionHas('invited_provider_email', 'invite.provider@example.com');
 
