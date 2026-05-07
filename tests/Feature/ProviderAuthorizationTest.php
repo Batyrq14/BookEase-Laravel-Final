@@ -25,13 +25,13 @@ it('allows an admin to create a provider account with a full staff profile', fun
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('providers.store'), [
-        'mode'                  => 'create',
-        'name'                  => 'Taylor Provider',
-        'email'                 => 'taylor.provider@example.com',
-        'phone'                 => '+7 701 111 2222',
-        'bio'                   => 'Experienced stylist with a focus on recurring clients.',
-        'profile_photo'         => UploadedFile::fake()->image('provider.jpg'),
-        'password'              => 'password',
+        'mode' => 'create',
+        'name' => 'Taylor Provider',
+        'email' => 'taylor.provider@example.com',
+        'phone' => '+7 701 111 2222',
+        'bio' => 'Experienced stylist with a focus on recurring clients.',
+        'profile_photo' => UploadedFile::fake()->image('provider.jpg'),
+        'password' => 'password',
         'password_confirmation' => 'password',
     ]);
 
@@ -51,11 +51,11 @@ it('allows an admin to invite a provider by email and returns an activation link
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->post(route('providers.store'), [
-        'mode'  => 'invite',
-        'name'  => 'Invited Provider',
+        'mode' => 'invite',
+        'name' => 'Invited Provider',
         'email' => 'invite.provider@example.com',
         'phone' => '+7 701 111 3333',
-        'bio'   => 'Will join next week.',
+        'bio' => 'Will join next week.',
     ]);
 
     $response->assertRedirect(route('providers.index'))
@@ -69,45 +69,45 @@ it('allows an admin to invite a provider by email and returns an activation link
 });
 
 it('shows providers only their own upcoming appointments', function () {
-    $admin         = User::factory()->admin()->create();
-    $provider      = User::factory()->provider()->create();
+    $admin = User::factory()->admin()->create();
+    $provider = User::factory()->provider()->create();
     $otherProvider = User::factory()->provider()->create();
-    $client        = User::factory()->client()->create();
+    $client = User::factory()->client()->create();
 
     $ownService = Service::factory()->create([
-        'name'            => 'Visible Service',
-        'provider_id'     => $provider->id,
+        'name' => 'Visible Service',
+        'provider_id' => $provider->id,
         'creator_user_id' => $admin->id,
     ]);
     $otherService = Service::factory()->create([
-        'name'            => 'Hidden Service',
-        'provider_id'     => $otherProvider->id,
+        'name' => 'Hidden Service',
+        'provider_id' => $otherProvider->id,
         'creator_user_id' => $admin->id,
     ]);
 
     Appointment::factory()->create([
-        'user_id'      => $client->id,
-        'service_id'   => $ownService->id,
+        'user_id' => $client->id,
+        'service_id' => $ownService->id,
         'scheduled_at' => now()->addDay(),
-        'ends_at'      => now()->addDay()->addHour(),
-        'status'       => AppointmentStatus::Booked->value,
-        'notes'        => 'Visible appointment',
+        'ends_at' => now()->addDay()->addHour(),
+        'status' => AppointmentStatus::Booked->value,
+        'notes' => 'Visible appointment',
     ]);
     Appointment::factory()->create([
-        'user_id'      => $client->id,
-        'service_id'   => $ownService->id,
+        'user_id' => $client->id,
+        'service_id' => $ownService->id,
         'scheduled_at' => now()->subDay(),
-        'ends_at'      => now()->subDay()->addHour(),
-        'status'       => AppointmentStatus::Booked->value,
-        'notes'        => 'Past appointment',
+        'ends_at' => now()->subDay()->addHour(),
+        'status' => AppointmentStatus::Booked->value,
+        'notes' => 'Past appointment',
     ]);
     Appointment::factory()->create([
-        'user_id'      => $client->id,
-        'service_id'   => $otherService->id,
+        'user_id' => $client->id,
+        'service_id' => $otherService->id,
         'scheduled_at' => now()->addDay(),
-        'ends_at'      => now()->addDay()->addHour(),
-        'status'       => AppointmentStatus::Booked->value,
-        'notes'        => 'Hidden appointment',
+        'ends_at' => now()->addDay()->addHour(),
+        'status' => AppointmentStatus::Booked->value,
+        'notes' => 'Hidden appointment',
     ]);
 
     $response = $this->actingAs($provider)->get(route('provider.appointments.index'));
@@ -120,33 +120,33 @@ it('shows providers only their own upcoming appointments', function () {
 });
 
 it('allows a provider to mark only their own appointments as completed', function () {
-    $admin         = User::factory()->admin()->create();
-    $provider      = User::factory()->provider()->create();
+    $admin = User::factory()->admin()->create();
+    $provider = User::factory()->provider()->create();
     $otherProvider = User::factory()->provider()->create();
-    $client        = User::factory()->client()->create();
+    $client = User::factory()->client()->create();
 
     $ownService = Service::factory()->create([
-        'provider_id'     => $provider->id,
+        'provider_id' => $provider->id,
         'creator_user_id' => $admin->id,
     ]);
     $otherService = Service::factory()->create([
-        'provider_id'     => $otherProvider->id,
+        'provider_id' => $otherProvider->id,
         'creator_user_id' => $admin->id,
     ]);
 
     $ownAppointment = Appointment::factory()->create([
-        'user_id'      => $client->id,
-        'service_id'   => $ownService->id,
+        'user_id' => $client->id,
+        'service_id' => $ownService->id,
         'scheduled_at' => now()->addDay(),
-        'ends_at'      => now()->addDay()->addHour(),
-        'status'       => AppointmentStatus::Booked->value,
+        'ends_at' => now()->addDay()->addHour(),
+        'status' => AppointmentStatus::Booked->value,
     ]);
     $otherAppointment = Appointment::factory()->create([
-        'user_id'      => $client->id,
-        'service_id'   => $otherService->id,
+        'user_id' => $client->id,
+        'service_id' => $otherService->id,
         'scheduled_at' => now()->addDay(),
-        'ends_at'      => now()->addDay()->addHour(),
-        'status'       => AppointmentStatus::Booked->value,
+        'ends_at' => now()->addDay()->addHour(),
+        'status' => AppointmentStatus::Booked->value,
     ]);
 
     $this->actingAs($provider)
@@ -154,7 +154,7 @@ it('allows a provider to mark only their own appointments as completed', functio
         ->assertRedirect();
 
     $this->assertDatabaseHas('appointments', [
-        'id'     => $ownAppointment->id,
+        'id' => $ownAppointment->id,
         'status' => AppointmentStatus::Completed->value,
     ]);
 
@@ -163,17 +163,17 @@ it('allows a provider to mark only their own appointments as completed', functio
         ->assertForbidden();
 
     $this->assertDatabaseHas('appointments', [
-        'id'     => $otherAppointment->id,
+        'id' => $otherAppointment->id,
         'status' => AppointmentStatus::Booked->value,
     ]);
 });
 
 it('prevents a provider from deleting an admin-created service', function () {
-    $admin    = User::factory()->admin()->create();
+    $admin = User::factory()->admin()->create();
     $provider = User::factory()->provider()->create();
 
     $service = Service::factory()->create([
-        'provider_id'     => $provider->id,
+        'provider_id' => $provider->id,
         'creator_user_id' => $admin->id,
     ]);
 

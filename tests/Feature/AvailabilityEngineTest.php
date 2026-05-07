@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
 
 beforeEach(function () {
     $this->service = Service::factory()->create(['duration_minutes' => 60]);
-    $this->client  = User::factory()->create(['role' => 'client']);
+    $this->client = User::factory()->create(['role' => 'client']);
 
     $this->appointmentService = app(AppointmentService::class);
 });
@@ -37,16 +37,16 @@ it('records an appointment when the slot is free', function () {
         ->ends_at->toDateTimeString()->toBe($scheduledAt->copy()->addMinutes(60)->toDateTimeString());
 
     $this->assertDatabaseHas('appointments', [
-        'id'         => $appointment->id,
-        'user_id'    => $this->client->id,
+        'id' => $appointment->id,
+        'user_id' => $this->client->id,
         'service_id' => $this->service->id,
-        'status'     => 'booked',
+        'status' => 'booked',
     ]);
 });
 
 it('auto-calculates ends_at based on service duration', function () {
     $shortService = Service::factory()->create(['duration_minutes' => 30]);
-    $scheduledAt  = Carbon::tomorrow()->setTime(14, 0);
+    $scheduledAt = Carbon::tomorrow()->setTime(14, 0);
 
     $appointment = $this->appointmentService->book(
         userId: $this->client->id,
@@ -71,7 +71,7 @@ it('allows back-to-back bookings on the same service', function () {
 
 it('allows the same time slot for two different services', function () {
     $otherService = Service::factory()->create(['duration_minutes' => 60]);
-    $scheduledAt  = Carbon::tomorrow()->setTime(10, 0);
+    $scheduledAt = Carbon::tomorrow()->setTime(10, 0);
 
     $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
     $second = $this->appointmentService->book($this->client->id, $otherService->id, $scheduledAt);
@@ -152,7 +152,7 @@ it('reschedules an appointment to a free slot', function () {
     );
 
     $newTime = Carbon::tomorrow()->setTime(14, 0);
-    $result  = $this->appointmentService->reschedule($appointment, $newTime);
+    $result = $this->appointmentService->reschedule($appointment, $newTime);
 
     expect($result)->toBeTrue();
 
@@ -196,7 +196,7 @@ it('returns HTTP 409 with slot_unavailable when the API slot is taken', function
 
     $response = $this->actingAs($this->client)
         ->postJson('/api/appointments', [
-            'service_id'   => $this->service->id,
+            'service_id' => $this->service->id,
             'scheduled_at' => $scheduledAt->toDateTimeString(),
         ]);
 

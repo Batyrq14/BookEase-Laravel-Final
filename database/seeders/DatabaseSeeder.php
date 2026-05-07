@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name'     => 'Admin User',
-            'email'    => 'admin@bookease.kz',
+            'name' => 'Admin User',
+            'email' => 'admin@bookease.kz',
             'password' => Hash::make('password'),
-            'role'     => UserRole::Admin->value,
+            'role' => UserRole::Admin->value,
         ]);
 
         echo "BookEase seeded successfully with admin account.\n";

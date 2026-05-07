@@ -13,11 +13,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 
 it('calculates ends_at correctly from scheduled_at and duration', function () {
-    $mockRepo           = Mockery::mock(AppointmentRepositoryInterface::class);
+    $mockRepo = Mockery::mock(AppointmentRepositoryInterface::class);
     $appointmentService = new AppointmentService($mockRepo);
 
     $start = Carbon::parse('2026-05-01 10:00:00');
-    $end   = $appointmentService->calculateEndTime($start, 45);
+    $end = $appointmentService->calculateEndTime($start, 45);
 
     expect($end->toDateTimeString())->toBe('2026-05-01 10:45:00');
 });
@@ -43,7 +43,7 @@ it('throws SlotUnavailableException when the repository reports an overlap', fun
 it('passes the correct ends_at to the repository when booking', function () {
     Event::fake();
 
-    $service     = Service::factory()->create(['duration_minutes' => 90]);
+    $service = Service::factory()->create(['duration_minutes' => 90]);
     $scheduledAt = Carbon::parse('2026-05-01 10:00:00');
     $expectedEnd = Carbon::parse('2026-05-01 11:30:00');
 
@@ -61,11 +61,11 @@ it('passes the correct ends_at to the repository when booking', function () {
     $client = User::factory()->create(['role' => 'client']);
 
     $fakeAppointment = clone new Appointment([
-        'user_id'      => $client->id,
-        'service_id'   => $service->id,
+        'user_id' => $client->id,
+        'service_id' => $service->id,
         'scheduled_at' => $scheduledAt,
-        'ends_at'      => $expectedEnd,
-        'status'       => AppointmentStatus::Booked->value,
+        'ends_at' => $expectedEnd,
+        'status' => AppointmentStatus::Booked->value,
     ]);
     $fakeAppointment->setAttribute('id', 999);
     $fakeAppointment->exists = true;
@@ -92,7 +92,7 @@ it('passes the correct ends_at to the repository when booking', function () {
 });
 
 it('delegates cancellation to the repository', function () {
-    $mockRepo    = Mockery::mock(AppointmentRepositoryInterface::class);
+    $mockRepo = Mockery::mock(AppointmentRepositoryInterface::class);
     $appointment = new Appointment(['status' => AppointmentStatus::Booked->value]);
 
     $mockRepo->shouldReceive('update')
