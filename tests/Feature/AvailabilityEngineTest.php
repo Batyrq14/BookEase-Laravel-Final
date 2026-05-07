@@ -11,13 +11,8 @@ use App\Services\AppointmentService;
 use Illuminate\Support\Carbon;
 
 beforeEach(function () {
-    $this->service = Service::factory()->create([
-        'name' => 'Haircut',
-        'duration_minutes' => 60,
-        'price' => 25.00,
-    ]);
-
-    $this->user = User::factory()->create(['role' => 'client']);
+    $this->service = Service::factory()->create(['duration_minutes' => 60]);
+    $this->client  = User::factory()->create(['role' => 'client']);
 
     $this->appointmentService = app(AppointmentService::class);
 });
@@ -26,11 +21,11 @@ beforeEach(function () {
 //  Happy-path bookings
 // ─────────────────────────────────────────────────────
 
-it('books an appointment when the slot is free', function () {
+it('records an appointment when the slot is free', function () {
     $scheduledAt = Carbon::tomorrow()->setTime(10, 0);
 
     $appointment = $this->appointmentService->book(
-        userId: $this->user->id,
+        userId: $this->client->id,
         serviceId: $this->service->id,
         scheduledAt: $scheduledAt,
     );
@@ -42,19 +37,19 @@ it('books an appointment when the slot is free', function () {
         ->ends_at->toDateTimeString()->toBe($scheduledAt->copy()->addMinutes(60)->toDateTimeString());
 
     $this->assertDatabaseHas('appointments', [
-        'id' => $appointment->id,
-        'user_id' => $this->user->id,
+        'id'         => $appointment->id,
+        'user_id'    => $this->client->id,
         'service_id' => $this->service->id,
-        'status' => 'booked',
+        'status'     => 'booked',
     ]);
 });
 
 it('auto-calculates ends_at based on service duration', function () {
     $shortService = Service::factory()->create(['duration_minutes' => 30]);
-    $scheduledAt = Carbon::tomorrow()->setTime(14, 0);
+    $scheduledAt  = Carbon::tomorrow()->setTime(14, 0);
 
     $appointment = $this->appointmentService->book(
-        userId: $this->user->id,
+        userId: $this->client->id,
         serviceId: $shortService->id,
         scheduledAt: $scheduledAt,
     );
@@ -63,35 +58,35 @@ it('auto-calculates ends_at based on service duration', function () {
         ->toBe($scheduledAt->copy()->addMinutes(30)->toDateTimeString());
 });
 
-it('allows booking adjacent (back-to-back) slots', function () {
+it('allows back-to-back bookings on the same service', function () {
     $start1 = Carbon::tomorrow()->setTime(10, 0);
-    $start2 = Carbon::tomorrow()->setTime(11, 0); // starts exactly when first ends
+    $start2 = Carbon::tomorrow()->setTime(11, 0); // starts exactly when the first ends
 
-    $this->appointmentService->book($this->user->id, $this->service->id, $start1);
-    $second = $this->appointmentService->book($this->user->id, $this->service->id, $start2);
+    $this->appointmentService->book($this->client->id, $this->service->id, $start1);
+    $second = $this->appointmentService->book($this->client->id, $this->service->id, $start2);
 
     expect($second)->toBeInstanceOf(Appointment::class);
     $this->assertDatabaseCount('appointments', 2);
 });
 
-it('allows the same time for different services', function () {
+it('allows the same time slot for two different services', function () {
     $otherService = Service::factory()->create(['duration_minutes' => 60]);
-    $scheduledAt = Carbon::tomorrow()->setTime(10, 0);
+    $scheduledAt  = Carbon::tomorrow()->setTime(10, 0);
 
-    $this->appointmentService->book($this->user->id, $this->service->id, $scheduledAt);
-    $second = $this->appointmentService->book($this->user->id, $otherService->id, $scheduledAt);
+    $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
+    $second = $this->appointmentService->book($this->client->id, $otherService->id, $scheduledAt);
 
     expect($second)->toBeInstanceOf(Appointment::class);
     $this->assertDatabaseCount('appointments', 2);
 });
 
-it('allows booking a slot previously held by a cancelled appointment', function () {
+it('frees a slot after its appointment is cancelled', function () {
     $scheduledAt = Carbon::tomorrow()->setTime(10, 0);
 
-    $appointment = $this->appointmentService->book($this->user->id, $this->service->id, $scheduledAt);
+    $appointment = $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
     $this->appointmentService->cancel($appointment);
 
-    $newBooking = $this->appointmentService->book($this->user->id, $this->service->id, $scheduledAt);
+    $newBooking = $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
 
     expect($newBooking)
         ->toBeInstanceOf(Appointment::class)
@@ -99,65 +94,51 @@ it('allows booking a slot previously held by a cancelled appointment', function 
 });
 
 // ─────────────────────────────────────────────────────
-//  Overlap rejections (the core of the engine)
+//  Overlap rejections
 // ─────────────────────────────────────────────────────
 
-it('rejects exact duplicate booking', function () {
+it('rejects an exact duplicate booking', function () {
     $scheduledAt = Carbon::tomorrow()->setTime(10, 0);
 
-    $this->appointmentService->book($this->user->id, $this->service->id, $scheduledAt);
-
-    $this->appointmentService->book($this->user->id, $this->service->id, $scheduledAt);
+    $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
+    $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
 })->throws(SlotUnavailableException::class);
 
-it('rejects partial overlap at the start', function () {
+it('rejects a booking that starts before and overlaps an existing one', function () {
     // Existing: 10:00 – 11:00
-    // New:       9:30 – 10:30 ← overlaps by 30 min
+    // New:       9:30 – 10:30  ← overlaps by 30 min
     $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(10, 0),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(10, 0),
     );
 
     $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(9, 30),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(9, 30),
     );
 })->throws(SlotUnavailableException::class);
 
-it('rejects partial overlap at the end', function () {
+it('rejects a booking that starts inside and overflows an existing one', function () {
     // Existing: 10:00 – 11:00
-    // New:      10:30 – 11:30 ← overlaps by 30 min
+    // New:      10:30 – 11:30  ← overlaps by 30 min
     $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(10, 0),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(10, 0),
     );
 
     $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(10, 30),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(10, 30),
     );
 })->throws(SlotUnavailableException::class);
 
-it('rejects an enclosing booking that encompasses an existing one', function () {
-    // Use a long-duration service so the new booking fully wraps the existing one.
+it('rejects a booking that fully wraps an existing one', function () {
     $longService = Service::factory()->create(['duration_minutes' => 180]);
 
     // Existing: 10:00 – 13:00 (180 min)
     $this->appointmentService->book(
-        $this->user->id,
-        $longService->id,
-        Carbon::tomorrow()->setTime(10, 0),
+        $this->client->id, $longService->id, Carbon::tomorrow()->setTime(10, 0),
     );
 
-    // New: 9:00 – 12:00 (180 min) — overlaps with existing 10:00-13:00
+    // New: 09:00 – 12:00 (180 min) — wraps the existing slot
     $this->appointmentService->book(
-        $this->user->id,
-        $longService->id,
-        Carbon::tomorrow()->setTime(9, 0),
+        $this->client->id, $longService->id, Carbon::tomorrow()->setTime(9, 0),
     );
 })->throws(SlotUnavailableException::class);
 
@@ -167,13 +148,11 @@ it('rejects an enclosing booking that encompasses an existing one', function () 
 
 it('reschedules an appointment to a free slot', function () {
     $appointment = $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(10, 0),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(10, 0),
     );
 
     $newTime = Carbon::tomorrow()->setTime(14, 0);
-    $result = $this->appointmentService->reschedule($appointment, $newTime);
+    $result  = $this->appointmentService->reschedule($appointment, $newTime);
 
     expect($result)->toBeTrue();
 
@@ -182,30 +161,23 @@ it('reschedules an appointment to a free slot', function () {
     expect($appointment->ends_at->toDateTimeString())->toBe($newTime->copy()->addMinutes(60)->toDateTimeString());
 });
 
-it('rejects rescheduling to an occupied slot', function () {
+it('rejects rescheduling to an already-occupied slot', function () {
     $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(10, 0),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(10, 0),
     );
 
     $second = $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        Carbon::tomorrow()->setTime(14, 0),
+        $this->client->id, $this->service->id, Carbon::tomorrow()->setTime(14, 0),
     );
 
-    // Try to move the second appointment to 10:00 (already taken)
     $this->appointmentService->reschedule($second, Carbon::tomorrow()->setTime(10, 0));
 })->throws(SlotUnavailableException::class);
 
-it('allows rescheduling to the same time (no self-conflict)', function () {
+it('allows rescheduling to the same time without a self-conflict', function () {
     $scheduledAt = Carbon::tomorrow()->setTime(10, 0);
 
     $appointment = $this->appointmentService->book(
-        $this->user->id,
-        $this->service->id,
-        $scheduledAt,
+        $this->client->id, $this->service->id, $scheduledAt,
     );
 
     $result = $this->appointmentService->reschedule($appointment, $scheduledAt->copy());
@@ -214,18 +186,17 @@ it('allows rescheduling to the same time (no self-conflict)', function () {
 });
 
 // ─────────────────────────────────────────────────────
-//  Exception rendering
+//  API conflict response
 // ─────────────────────────────────────────────────────
 
-it('returns 409 JSON response for API conflict', function () {
-    // Use next Monday to avoid the "no weekends" validation rule.
+it('returns HTTP 409 with slot_unavailable when the API slot is taken', function () {
     $scheduledAt = Carbon::now()->next(Carbon::MONDAY)->setTime(10, 0);
 
-    $this->appointmentService->book($this->user->id, $this->service->id, $scheduledAt);
+    $this->appointmentService->book($this->client->id, $this->service->id, $scheduledAt);
 
-    $response = $this->actingAs($this->user)
+    $response = $this->actingAs($this->client)
         ->postJson('/api/appointments', [
-            'service_id' => $this->service->id,
+            'service_id'   => $this->service->id,
             'scheduled_at' => $scheduledAt->toDateTimeString(),
         ]);
 
