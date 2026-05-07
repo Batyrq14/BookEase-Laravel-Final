@@ -18,6 +18,7 @@
         class="mx-auto max-w-6xl"
         x-data="bookingCalendar({
             services: @js($servicesJson),
+            categories: @js($categories->values()),
             availabilityUrl: @js(route('appointments.calendar')),
             initialServiceId: @js(old('service_id', request()->query('service_id'))),
             initialScheduledAt: @js(old('scheduled_at')),
@@ -29,23 +30,42 @@
                 @csrf
 
                 <div class="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]">
-                    <div>
-                        <x-input-label for="service_id" :value="__('Select service')" />
-                        <select
-                            id="service_id"
-                            name="service_id"
-                            required
-                            x-model="selectedId"
-                            @change="onServiceChange()"
-                            class="block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
-                        >
-                            @foreach($services as $service)
-                                <option value="{{ $service->id }}">
-                                    {{ $service->name }} - {{ $service->duration_minutes }} min - ${{ number_format($service->price, 2) }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <x-input-error :messages="$errors->get('service_id')" />
+                    <div class="space-y-3">
+                        @if($categories->count())
+                        <div>
+                            <x-input-label :value="__('Filter by category')" />
+                            <select
+                                x-model="selectedCategoryId"
+                                @change="onCategoryChange()"
+                                class="block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                            >
+                                <option value="">All categories</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+
+                        <div>
+                            <x-input-label for="service_id" :value="__('Select service')" />
+                            <select
+                                id="service_id"
+                                name="service_id"
+                                required
+                                x-model="selectedId"
+                                @change="onServiceChange()"
+                                class="block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                            >
+                                <template x-for="service in filteredServices" :key="service.id">
+                                    <option :value="service.id" x-text="`${service.name} — ${service.duration_minutes} min — $${service.price}`"></option>
+                                </template>
+                                <template x-if="filteredServices.length === 0">
+                                    <option value="" disabled>No services in this category</option>
+                                </template>
+                            </select>
+                            <x-input-error :messages="$errors->get('service_id')" />
+                        </div>
                     </div>
 
                     <div class="rounded-2xl border border-gray-200 bg-gray-50/80 px-5 py-4">
@@ -261,8 +281,10 @@
 function bookingCalendar(config) {
     return {
         services: config.services ?? [],
+        categories: config.categories ?? [],
         availabilityUrl: config.availabilityUrl,
         selectedId: config.initialServiceId ? String(config.initialServiceId) : '',
+        selectedCategoryId: '',
         selectedDate: '',
         selectedSlot: '',
         bookedSlots: {},
@@ -297,6 +319,21 @@ function bookingCalendar(config) {
                 this.monthCursor = new Date(now.getFullYear(), now.getMonth(), 1);
             }
 
+            this.onServiceChange();
+        },
+
+        get filteredServices() {
+            if (!this.selectedCategoryId) return this.services;
+            return this.services.filter(s => String(s.category_id) === String(this.selectedCategoryId));
+        },
+
+        onCategoryChange() {
+            const available = this.filteredServices;
+            if (available.length > 0 && !available.find(s => String(s.id) === String(this.selectedId))) {
+                this.selectedId = String(available[0].id);
+            } else if (available.length === 0) {
+                this.selectedId = '';
+            }
             this.onServiceChange();
         },
 

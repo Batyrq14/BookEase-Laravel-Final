@@ -8,8 +8,8 @@
                 </svg>
             </a>
             <div>
-                <h1 class="text-xl font-bold text-slate-900">Edit Service</h1>
-                <p class="text-sm text-slate-500 mt-0.5">{{ $service->name }}</p>
+                <h1 class="text-xl font-bold text-slate-900 dark:text-white">Edit Service</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{{ $service->name }}</p>
             </div>
         </div>
     </x-slot>
@@ -29,10 +29,24 @@
 
                 @if(auth()->user()->isAdmin())
                 <div>
+                    <x-input-label for="category_id" :value="__('Category')" />
+                    <select id="category_id" name="category_id"
+                            class="block w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors">
+                        <option value="">No category</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" @selected(old('category_id', $service->category_id) == $category->id)>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('category_id')" />
+                </div>
+
+                <div>
                     <x-input-label for="provider_id" :value="__('Assigned provider')" />
                     <select id="provider_id" name="provider_id"
-                            class="block w-full rounded-xl border-slate-300 text-sm focus:border-slate-500 focus:ring-slate-500/30">
-                        <option value="">Choose a provider</option>
+                            class="block w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors">
+                        <option value="">No provider assigned</option>
                         @foreach($providers as $provider)
                             <option value="{{ $provider->id }}" @selected(old('provider_id', $service->provider_id) == $provider->id)>
                                 {{ $provider->name }} · {{ $provider->email }}
@@ -42,18 +56,22 @@
                     <x-input-error :messages="$errors->get('provider_id')" />
                 </div>
                 @else
-                <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Assigned provider</p>
-                    <p class="mt-1 text-sm font-medium text-slate-900">{{ $service->provider?->name ?? 'Unassigned' }}</p>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-4 py-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Category</p>
+                    <p class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $service->category?->name ?? 'None' }}</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-4 py-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Assigned provider</p>
+                    <p class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ $service->provider?->name ?? 'Unassigned' }}</p>
                 </div>
                 @endif
 
                 <div>
                     <x-input-label for="description" :value="__('Description')" />
                     <textarea id="description" name="description" rows="3"
-                              class="block w-full bg-white border border-slate-300 text-slate-900 placeholder-slate-400
+                              class="block w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500
                                      rounded-xl px-4 py-2.5 text-sm transition-colors resize-none
-                                     focus:outline-none focus:ring-2 focus:ring-slate-500/30 focus:border-slate-500">{{ old('description', $service->description) }}</textarea>
+                                     focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">{{ old('description', $service->description) }}</textarea>
                     <x-input-error :messages="$errors->get('description')" />
                 </div>
 
@@ -72,9 +90,9 @@
                     </div>
                 </div>
 
-                <div class="pt-2 border-t border-slate-100">
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-700">
                     <div class="flex items-center justify-between mb-1">
-                        <p class="text-sm font-semibold text-slate-900">Location <span class="text-slate-400 font-normal">(optional)</span></p>
+                        <p class="text-sm font-semibold text-slate-900 dark:text-white">Location <span class="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></p>
                         <span id="location-badge" class="{{ ($service->latitude) ? '' : 'hidden' }} inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                             Location set
@@ -89,9 +107,9 @@
                             <input id="address" name="address" type="text"
                                    value="{{ old('address', $service->address) }}"
                                    placeholder="e.g. 123 Main St, New York"
-                                   class="flex-1 bg-white border border-slate-300 text-slate-900 placeholder-slate-400
+                                   class="flex-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500
                                           rounded-xl px-4 py-2.5 text-sm transition-colors
-                                          focus:outline-none focus:ring-2 focus:ring-slate-500/30 focus:border-slate-500" />
+                                          focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500" />
                             <button type="button" id="search-btn"
                                     class="shrink-0 px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white text-sm font-medium rounded-xl transition-colors flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +118,7 @@
                                 Search
                             </button>
                             <button type="button" id="locate-btn" title="Use my current location"
-                                    class="shrink-0 px-3 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 text-sm font-medium rounded-xl transition-colors flex items-center gap-2">
+                                    class="shrink-0 px-3 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium rounded-xl transition-colors flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
@@ -118,7 +136,7 @@
                     <p class="text-xs text-slate-400 mt-2">You can also click anywhere on the map or drag the pin to adjust.</p>
                 </div>
 
-                <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-700">
                     <a href="{{ route('services.index') }}">
                         <x-secondary-button type="button">Cancel</x-secondary-button>
                     </a>

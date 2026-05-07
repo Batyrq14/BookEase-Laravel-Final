@@ -8,6 +8,7 @@ use App\Enums\AppointmentStatus;
 use App\Exceptions\SlotUnavailableException;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Models\Appointment;
+use App\Models\Category;
 use App\Models\Service;
 use App\Services\AppointmentService;
 use Illuminate\Http\RedirectResponse;
@@ -42,11 +43,12 @@ class AppointmentController extends Controller
     {
         Gate::authorize('create', Appointment::class);
 
-        $services = Service::query()->orderBy('name')->get();
+        $services = Service::query()->with('category')->orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
 
         $servicesJson = $services->map(fn (Service $service) => $this->mapServiceForCalendar($service))->values();
 
-        return view('appointments.create', compact('services', 'servicesJson'));
+        return view('appointments.create', compact('services', 'servicesJson', 'categories'));
     }
 
     public function store(StoreAppointmentRequest $request): RedirectResponse
@@ -124,14 +126,35 @@ class AppointmentController extends Controller
             ->with('success', 'Appointment rescheduled successfully.');
     }
 
-    public function adminIndex(): View
+    public function adminIndex(Request $request): View
     {
         Gate::authorize('admin');
 
+        $filters = $request->only(['search', 'status']);
+
+        $query = Appointment::with(['service.provider', 'user'])->latest('scheduled_at');
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->whereHas('user', fn ($u) => $u->where('name', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('email', 'like', '%' . $filters['search'] . '%'))
+                  ->orWhereHas('service', fn ($s) => $s->where('name', 'like', '%' . $filters['search'] . '%'));
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        $stats = (clone $query)->reorder()
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
         return view('appointments.admin', [
-            'appointments' => Appointment::with(['service.provider', 'user'])
-                ->latest('scheduled_at')
-                ->get(),
+            'appointments' => $query->paginate(20)->withQueryString(),
+            'filters'      => $filters,
+            'stats'        => $stats,
         ]);
     }
 
@@ -154,6 +177,8 @@ class AppointmentController extends Controller
             'address' => $service->address,
             'latitude' => $service->latitude ? (float) $service->latitude : null,
             'longitude' => $service->longitude ? (float) $service->longitude : null,
+            'category_id' => $service->category_id,
+            'category_name' => $service->category?->name,
         ];
     }
 }

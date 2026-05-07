@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\AppointmentApiController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserController;
 use App\Models\Appointment;
 use App\Models\Service;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+    Route::get('/services/browse', [ServiceController::class, 'browse'])->name('services.browse');
     Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
     Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
     Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
@@ -80,6 +83,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/providers', [ProviderController::class, 'index'])->name('providers.index');
         Route::post('/admin/providers', [ProviderController::class, 'store'])->name('providers.store');
         Route::get('/admin/appointments', [AppointmentController::class, 'adminIndex'])->name('admin.appointments.index');
+        Route::get('/admin/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::post('/admin/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::put('/admin/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/admin/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::get('/admin/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/admin/users', [UserController::class, 'store'])->name('users.store');
+        Route::put('/admin/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
     Route::get('/api/appointments/calendar', [AppointmentApiController::class, 'calendar'])->name('appointments.calendar');

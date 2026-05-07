@@ -1,7 +1,7 @@
 <section>
     <div class="mb-6">
-        <h2 class="text-base font-semibold text-slate-900">Update Password</h2>
-        <p class="text-sm text-slate-500 mt-0.5">Use a long, random password to keep your account secure.</p>
+        <h2 class="text-base font-semibold text-slate-900 dark:text-white">Update Password</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Use a long, random password to keep your account secure.</p>
     </div>
 
     <form method="post" action="{{ route('password.update') }}" class="space-y-5">
@@ -29,13 +29,13 @@
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" />
         </div>
 
-        <div class="flex items-center gap-4 pt-2 border-t border-slate-100">
+        <div class="flex items-center gap-4 pt-2 border-t border-slate-100 dark:border-slate-700">
             <x-primary-button>Update Password</x-primary-button>
 
             @if (session('status') === 'password-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition
                    x-init="setTimeout(() => show = false, 2500)"
-                   class="text-sm text-emerald-600 font-medium">
+                    class="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
                     Password updated.
                 </p>
             @endif

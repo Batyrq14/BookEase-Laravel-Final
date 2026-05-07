@@ -6,28 +6,57 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Models\Category;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
-    public function index(): View
+    public function browse(Request $request): View
+    {
+        $filters = $request->only(['search', 'category_id']);
+
+        $query = Service::query()->with(['provider', 'category'])->whereNotNull('provider_id');
+
+        if (!empty($filters['search'])) {
+            $query->where('name', 'like', '%' . $filters['search'] . '%');
+        }
+        if (!empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        $services = $query->latest()->get();
+        $categories = Category::orderBy('name')->get();
+
+        return view('services.browse', compact('services', 'categories', 'filters'));
+    }
+
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', Service::class);
 
         $user = auth()->user();
-        $services = $user->isAdmin()
-            ? Service::query()->with(['provider', 'creator'])->latest()->get()
-            : Service::query()
-                ->with(['provider', 'creator'])
-                ->where('provider_id', $user->id)
-                ->latest()
-                ->get();
+        $filters = $request->only(['search', 'category_id']);
 
-        return view('services.index', ['services' => $services]);
+        $query = $user->isAdmin()
+            ? Service::query()->with(['provider', 'creator', 'category'])
+            : Service::query()->with(['provider', 'creator', 'category'])->where('provider_id', $user->id);
+
+        if (!empty($filters['search'])) {
+            $query->where('name', 'like', '%' . $filters['search'] . '%');
+        }
+        if (!empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        $services = $query->latest()->get();
+        $categories = Category::orderBy('name')->get();
+
+        return view('services.index', compact('services', 'categories', 'filters'));
     }
 
     public function create(): View
@@ -36,6 +65,7 @@ class ServiceController extends Controller
 
         return view('services.create', [
             'providers' => User::query()->providers()->orderBy('name')->get(),
+            'categories' => Category::orderBy('name')->get(),
         ]);
     }
 
@@ -58,6 +88,7 @@ class ServiceController extends Controller
         return view('services.edit', [
             'service' => $service,
             'providers' => User::query()->providers()->orderBy('name')->get(),
+            'categories' => Category::orderBy('name')->get(),
         ]);
     }
 

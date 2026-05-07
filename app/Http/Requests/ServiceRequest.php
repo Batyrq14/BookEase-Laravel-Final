@@ -25,11 +25,12 @@ abstract class ServiceRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:500'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'category_id' => ['nullable', Rule::exists('categories', 'id')],
         ];
 
         if ($this->user()?->isAdmin()) {
             $rules['provider_id'] = [
-                'required',
+                'nullable',
                 Rule::exists('users', 'id')->where(
                     fn ($query) => $query->where('role', UserRole::Provider->value),
                 ),

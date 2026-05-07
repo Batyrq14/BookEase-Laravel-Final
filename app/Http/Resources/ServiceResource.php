@@ -19,6 +19,13 @@ class ServiceResource extends JsonResource
             'description' => $this->description,
             'duration_minutes' => $this->duration_minutes,
             'price' => number_format((float) $this->price, 2, '.', ''),
+            'category' => $this->when(
+                $this->category !== null,
+                fn (): array => [
+                    'id' => $this->category->id,
+                    'name' => $this->category->name,
+                ],
+            ),
             'location' => $this->when(
                 $this->address !== null || $this->latitude !== null || $this->longitude !== null,
                 fn (): array => [

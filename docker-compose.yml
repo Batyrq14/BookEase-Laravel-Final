@@ -2,11 +2,15 @@ services:
   app:
     image: serversideup/php:8.4-fpm-nginx
     container_name: bookease-app
+    restart: unless-stopped
     working_dir: /var/www/html
     environment:
       SSL_MODE: "off"
+      PHP_MEMORY_LIMIT: "256M"
+      PHP_MAX_EXECUTION_TIME: "60"
     volumes:
       - .:/var/www/html
+      - bookease_storage:/var/www/html/storage/app/public
     ports:
       - "8000:8080"
     depends_on:
@@ -19,11 +23,14 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
+    ports:
+      - "5173:5173"
     profiles: ["build"]
 
   pgsql:
     image: postgres:16-alpine
     container_name: bookease-pgsql
+    restart: unless-stopped
     environment:
       POSTGRES_DB: bookease
       POSTGRES_USER: bookease
@@ -40,3 +47,4 @@ services:
 
 volumes:
   pgsql_data:
+  bookease_storage:
