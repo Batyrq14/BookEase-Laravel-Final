@@ -25,6 +25,7 @@ class StoreProviderRequest extends FormRequest
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:30'],
             'bio' => ['nullable', 'string', 'max:2000'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'password' => [$isCreateMode ? 'required' : 'nullable', 'confirmed', Password::defaults()],
         ];

@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
@@ -47,13 +47,8 @@
     {{-- Main Content (centered) --}}
     <div class="flex-1 flex flex-col items-center justify-center p-4 py-16 relative z-10">
         {{-- Logo --}}
-        <a href="{{ url('/') }}" class="flex items-center gap-2.5 mb-8 group relative z-10">
-            <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-600 dark:bg-brand-500 shadow-md shadow-brand-500/25 group-hover:shadow-glow group-hover:-translate-y-px transition-all duration-300">
-                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                </svg>
-            </div>
-            <span class="text-xl font-bold tracking-tight text-surface-900 dark:text-white">Book<span class="text-brand-600 dark:text-brand-400">Ease</span></span>
+        <a href="{{ url('/') }}" class="mb-8 relative z-10">
+            <span class="font-display font-bold text-xl tracking-tight leading-none text-surface-900 dark:text-white">Book<span class="text-brand-600 dark:text-brand-400">Ease</span></span>
         </a>
 
         {{-- Main Card --}}

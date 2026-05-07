@@ -12,21 +12,12 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class ProviderController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        Gate::authorize('admin');
-
-        return view('providers.index', [
-            'providers' => User::query()
-                ->providers()
-                ->withCount('assignedServices')
-                ->latest()
-                ->get(),
-        ]);
+        return redirect()->route('users.index');
     }
 
     public function store(StoreProviderRequest $request): RedirectResponse
@@ -42,6 +33,7 @@ class ProviderController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'bio' => $validated['bio'] ?? null,
+            'category_id' => $validated['category_id'] ?? null,
             'profile_photo_path' => $profilePhotoPath,
             'role' => UserRole::Provider->value,
             'password' => Hash::make($validated['password'] ?? Str::password(24)),
@@ -55,14 +47,14 @@ class ProviderController extends Controller
             ]);
 
             return redirect()
-                ->route('providers.index')
+                ->route('users.index')
                 ->with('success', 'Provider invitation created successfully.')
                 ->with('invitation_link', $invitationLink)
                 ->with('invited_provider_email', $provider->email);
         }
 
         return redirect()
-            ->route('providers.index')
+            ->route('users.index')
             ->with('success', 'Provider account created successfully.');
     }
 }

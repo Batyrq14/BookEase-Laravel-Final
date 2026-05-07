@@ -9,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
@@ -23,7 +23,7 @@
         }
     </script>
 </head>
-<body class="font-sans antialiased bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-surface-100 min-h-screen">
+<body class="font-sans antialiased bg-surface-50 dark:bg-ink-950 text-surface-900 dark:text-surface-100 min-h-screen">
 
     {{-- Skip to content --}}
     <a href="#main-content" class="skip-to-content">Skip to content</a>
@@ -40,47 +40,42 @@
                     <div class="hidden md:flex items-center gap-1">
                         <a href="{{ route('dashboard') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('dashboard') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('dashboard') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             Dashboard
                         </a>
 
                         @can('admin')
                         <a href="{{ route('services.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('services.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('services.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             Services
                         </a>
                         <a href="{{ route('admin.appointments.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('admin.appointments.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('admin.appointments.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             Appointments
                         </a>
                         <a href="{{ route('categories.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('categories.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('categories.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             Categories
-                        </a>
-                        <a href="{{ route('providers.index') }}"
-                           class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('providers.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
-                            Providers
                         </a>
                         <a href="{{ route('users.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('users.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
-                            Users
+                                  {{ request()->routeIs('users.*') || request()->routeIs('providers.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
+                            People
                         </a>
                         @endcan
 
                         @can('provider')
                         <a href="{{ route('provider.appointments.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('provider.appointments.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('provider.appointments.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             My Schedule
                         </a>
                         <a href="{{ route('services.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('services.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('services.*') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             My Services
                         </a>
                         @endcan
@@ -88,12 +83,12 @@
                         @can('client')
                         <a href="{{ route('services.browse') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('services.browse') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('services.browse') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             Browse Services
                         </a>
                         <a href="{{ route('appointments.index') }}"
                            class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200
-                                  {{ request()->routeIs('appointments.index') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/30 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/20' }}">
+                                  {{ request()->routeIs('appointments.index') ? 'text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/40' : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70' }}">
                             My Appointments
                         </a>
                         @endcan
@@ -218,11 +213,8 @@
                 <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.*')">
                     Categories
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('providers.index')" :active="request()->routeIs('providers.*')">
-                    Providers
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                    Users
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*') || request()->routeIs('providers.*')">
+                    People
                 </x-responsive-nav-link>
                 @endcan
                 @can('provider')
@@ -275,7 +267,7 @@
                 </div>
                 <div class="space-y-0.5">
                     <a href="{{ route('profile.edit') }}"
-                       class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors duration-150">
+                       class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100/70 dark:hover:bg-ink-800/70 transition-colors duration-150">
                         Profile settings
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
@@ -392,7 +384,7 @@
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-90"
             @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
-            class="fixed bottom-6 right-6 z-40 p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-300 dark:hover:border-brand-500 shadow-soft hover:shadow-soft-lg transition-all duration-300"
+            class="fixed bottom-6 right-6 z-40 p-3 rounded-xl bg-white dark:bg-ink-900 text-surface-500 dark:text-ink-400 hover:text-brand-600 dark:hover:text-brand-400 shadow-card dark:shadow-card-dark hover:shadow-card-hover dark:hover:shadow-card-dark-hover transition-all duration-200"
             aria-label="Back to top">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/>
