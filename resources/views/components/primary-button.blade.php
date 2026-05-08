@@ -10,11 +10,11 @@
 
 @php
     $sizeClasses = match ($size) {
-        'xs' => 'px-2.5 py-1.5 text-xs  gap-1.5',
-        'sm' => 'px-3   py-2   text-sm  gap-1.5',
-        'md' => 'px-4   py-2.5 text-sm  gap-2',
-        'lg' => 'px-5   py-3   text-base gap-2',
-        'xl' => 'px-6   py-3.5 text-base gap-2.5',
+        'xs' => 'px-3   py-1.5 text-[13px] gap-1.5',
+        'sm' => 'px-4   py-2   text-sm     gap-1.5',
+        'md' => 'px-5   py-2.5 text-[15px] gap-2',
+        'lg' => 'px-6   py-3   text-[15px] gap-2',
+        'xl' => 'px-7   py-3.5 text-[15px] gap-2.5',
     };
 
     $tag = $href ? 'a' : 'button';
@@ -25,23 +25,20 @@
     @if($href) href="{{ $href }}" @endif
     {{ $attributes->merge([
         'class' => trim(implode(' ', [
+            // Dark Solid Button — pill shape, Deep Cosmos fill, near-white text
             'relative inline-flex items-center justify-center',
-            'font-semibold rounded-xl',
-            'transition-all duration-150',
-            // Focus ring
-            'outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-ink-950',
-            // Disabled
-            'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0',
-            // Color: violet-600 base — hover lighter (comes forward), active darker (pushes in)
-            'bg-brand-600 dark:bg-brand-500 text-white',
-            // Elevation: drop shadow + top-edge bevel highlight
+            'font-semibold rounded-full',
+            'bg-brand-600 text-[#fafeff]',
             'shadow-btn hover:shadow-btn-hover',
-            'hover:bg-brand-500 dark:hover:bg-brand-400',
-            // Press state: translate down + inset crush shadow
-            'active:translate-y-px active:shadow-btn-active active:bg-brand-700 dark:active:bg-brand-600',
+            'hover:bg-brand-700',
+            'active:translate-y-px active:shadow-btn-active active:bg-brand-800',
+            'transition-all duration-150',
+            'outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-ink-950',
+            'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0',
             $sizeClasses,
         ]))
     ]) }}
+    style="letter-spacing: -0.016em;"
     @if((!$href) && ($disabled || $loading)) disabled @endif
 >
     @if($loading)

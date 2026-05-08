@@ -25,26 +25,20 @@
     @if($href) href="{{ $href }}" @endif
     {{ $attributes->merge([
         'class' => trim(implode(' ', [
+            // Light Ghost Button — pill shape, white bg, shadow-as-border
             'relative inline-flex items-center justify-center',
-            'font-semibold rounded-xl',
+            'font-semibold rounded-full',
             'transition-all duration-150',
-            // Focus
             'outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-ink-950',
-            // Disabled
             'disabled:opacity-50 disabled:cursor-not-allowed',
-            // Color: white base, the ring shadow IS the border
-            'bg-white dark:bg-ink-800 text-surface-700 dark:text-surface-200',
-            // Shadow-as-border: subtle ring + lift
-            'shadow-[0_1px_2px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.08)]',
-            'dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]',
-            'hover:bg-surface-50 dark:hover:bg-ink-700',
-            'hover:shadow-[0_1px_4px_rgba(0,0,0,0.10),0_0_0_1px_rgba(0,0,0,0.10)]',
-            'dark:hover:shadow-[0_0_0_1px_rgba(255,255,255,0.12)]',
-            // Press
-            'active:translate-y-px active:bg-surface-100 dark:active:bg-ink-700',
+            'bg-white dark:bg-ink-800 text-surface-900 dark:text-surface-200',
+            'shadow-btn-ghost dark:shadow-[0_0_0_1px_rgba(255,255,255,0.08)]',
+            'hover:shadow-card dark:hover:shadow-[0_0_0_1px_rgba(255,255,255,0.12)]',
+            'active:translate-y-px active:bg-surface-50 dark:active:bg-ink-700',
             $sizeClasses,
         ]))
     ]) }}
+    style="letter-spacing: -0.016em;"
     @if((!$href) && ($disabled || $loading)) disabled @endif
 >
     @if($loading)

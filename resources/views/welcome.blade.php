@@ -4,10 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BookEase — Simple Online Booking</title>
+
+    {{-- Fraunces (ivarTextFont substitute) + Inter (abcdFont substitute) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Dark mode initialization --}}
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -16,89 +21,90 @@
         }
     </script>
 </head>
-<body class="font-sans antialiased bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen overflow-x-hidden">
+<body class="font-sans antialiased text-surface-900 min-h-screen overflow-x-hidden" style="background-color: #f8f9fc;">
 
     <a href="#main-content" class="skip-to-content">Skip to content</a>
 
-    {{-- ─── Nav ─────────────────────────────────────────────────────── --}}
-    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-700/80 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    {{-- ─── Sticky Nav — Deep Cosmos ───────────────────────────────────── --}}
+    <header class="sticky top-0 z-50" style="background-color: #001033;">
+        <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <a href="/" class="shrink-0">
-                <span class="font-display font-bold text-[17px] tracking-tight leading-none text-surface-900 dark:text-white">Book<span class="text-brand-600 dark:text-brand-400">Ease</span></span>
+                <span class="font-sans font-semibold text-[15px] text-white" style="letter-spacing: -0.016em;">BookEase</span>
             </a>
 
             <div class="flex items-center gap-2">
-                <button onclick="toggleDark()"
-                        class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-200"
-                        aria-label="Toggle dark mode">
-                    <svg class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                    </svg>
-                    <svg class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                    </svg>
-                </button>
-
-                <div class="flex items-center gap-2 text-sm font-medium">
-                    @auth
-                        <a href="{{ route('dashboard') }}"
-                           class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-px active:translate-y-px">
-                            Go to Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                           class="px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-xl transition-colors duration-150">
-                            Sign In
-                        </a>
-                        @if (Route::has('register'))
-                        <a href="{{ route('register') }}"
-                           class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-px active:translate-y-px">
-                            Get Started
-                        </a>
-                        @endif
-                    @endauth
-                </div>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="btn-cta text-sm px-5 py-2">
+                        Go to Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="btn-ghost-dark text-sm px-4 py-2">
+                        Sign In
+                    </a>
+                    @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="btn-cta text-sm px-5 py-2">
+                        Get Started
+                    </a>
+                    @endif
+                @endauth
             </div>
         </div>
     </header>
 
     <main id="main-content">
-        {{-- ─── Hero ───────────────────────────────────────────────────── --}}
-        <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 text-center relative">
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-brand-400/10 dark:bg-brand-500/10 blur-3xl pointer-events-none"></div>
-            <div class="relative">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-semibold tracking-wide uppercase mb-8 animate-fade-in">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Online Booking — Now Open
+        {{-- ─── Hero — full-bleed dark cosmos gradient ──────────────────── --}}
+        <section class="relative overflow-hidden" style="background: linear-gradient(180deg, #001033 0%, #0050f8 55%, #5fbdf7 100%); min-height: 560px;">
+            {{-- Dot-matrix texture overlay --}}
+            <div class="absolute inset-0 pointer-events-none opacity-[0.06]"
+                 style="background-image: radial-gradient(circle, rgba(255,255,255,1) 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+            {{-- Radial glow behind content --}}
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background: radial-gradient(50% 70% at 50% 80%, rgba(0,128,248,0.24) 0%, rgba(95,189,247,0.16) 40%, transparent 100%);"></div>
+
+            <div class="relative max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28 text-center">
+
+                {{-- Announcement Banner Pill --}}
+                <div class="flex justify-center mb-8 animate-fade-in">
+                    <div class="announce-pill">
+                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold text-surface-900"
+                              style="background-color: #d0f100; letter-spacing: 0.02em;">NEW</span>
+                        <span class="text-surface-600" style="letter-spacing: -0.016em;">Map-based location pinning now live</span>
+                        <svg class="w-3.5 h-3.5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
                 </div>
 
-                <h1 class="text-5xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight animate-fade-in-up">
-                    Booking made simple,<br class="hidden sm:block"> for you and your clients.
+                {{-- Headline — Fraunces display font --}}
+                <h1 class="font-display font-normal text-white text-center mb-6 animate-fade-in-up"
+                    style="font-size: 56px; line-height: 1.04; letter-spacing: -0.010em; font-feature-settings: 'ss04','ss06','ss09','ss10','ss11'; max-width: 720px; margin-left: auto; margin-right: auto;">
+                    Booking made simple,<br>for you and your clients.
                 </h1>
 
-                <p class="text-lg text-slate-500 dark:text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed animate-fade-in-up animate-delay-100">
+                {{-- Subheading — Inter body copy --}}
+                <p class="text-[17px] text-white/70 mb-10 max-w-lg mx-auto leading-relaxed animate-fade-in-up animate-delay-100"
+                   style="letter-spacing: -0.016em;">
                     BookEase lets businesses manage services and availability while clients book appointments in seconds — from any device.
                 </p>
 
+                {{-- CTAs --}}
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up animate-delay-200">
                     @auth
-                        <a href="{{ route('dashboard') }}"
-                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-px active:translate-y-px">
+                        <a href="{{ route('dashboard') }}" class="btn-cta px-7 py-3 text-[15px]">
                             Open Dashboard
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
                         </a>
                     @else
-                        <a href="{{ route('register') }}"
-                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/30 hover:-translate-y-px active:translate-y-px">
+                        <a href="{{ route('register') }}" class="btn-cta px-7 py-3 text-[15px]">
                             Create Free Account
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
                         </a>
-                        <a href="{{ route('login') }}"
-                           class="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-brand-200 dark:hover:border-brand-500 text-slate-700 dark:text-slate-300 font-semibold rounded-xl transition-all duration-150 hover:shadow-sm">
+                        <a href="{{ route('login') }}" class="btn-ghost-dark px-7 py-3 text-[15px]">
                             Sign In
                         </a>
                     @endauth
@@ -106,17 +112,19 @@
             </div>
         </section>
 
-        {{-- ─── App Preview Card ───────────────────────────────────────── --}}
-        <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-soft-lg overflow-hidden">
+        {{-- ─── App Preview Card — Pure Surface elevated on Ghost Canvas ─── --}}
+        <section class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 -mt-10 pb-20 relative z-10">
+            <div class="bg-white rounded-[20px] overflow-hidden"
+                 style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px, rgba(0,39,80,0.04) 0px 6px 12px -3px, rgba(0,39,80,0.03) 0px 32px 32px -16px, rgba(0,39,80,0.03) 0px 56px 72px -16px;">
                 {{-- Mock browser bar --}}
-                <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-100 dark:border-slate-700 flex items-center gap-2">
+                <div class="px-5 py-3.5 bg-surface-50 border-b border-black/[0.04] flex items-center gap-3">
                     <div class="flex gap-1.5">
-                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-red-400/70"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-400/70"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-400/70"></div>
                     </div>
-                    <div class="flex-1 mx-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md px-3 py-1 text-xs text-slate-400 dark:text-slate-500">
+                    <div class="flex-1 mx-3 bg-white border border-black/[0.06] rounded px-3 py-1 text-xs text-surface-400"
+                         style="letter-spacing: -0.016em;">
                         bookease.app/appointments/create
                     </div>
                 </div>
@@ -124,48 +132,48 @@
                 {{-- Mock booking UI --}}
                 <div class="p-6 sm:p-8">
                     <div class="grid sm:grid-cols-2 gap-6">
-                        {{-- Left: Service + calendar strip --}}
+                        {{-- Left: Service + calendar --}}
                         <div class="space-y-4">
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">Select service</p>
-                                <div class="bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 flex items-center justify-between">
+                                <p class="text-[11px] font-semibold uppercase text-surface-400 mb-2" style="letter-spacing: 0.06em;">Select service</p>
+                                <div class="bg-surface-50 rounded-[16px] px-4 py-3 flex items-center justify-between"
+                                     style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px;">
                                     <div>
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-white">Deep Tissue Massage</p>
-                                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">60 min · $85.00</p>
+                                        <p class="text-sm font-semibold text-surface-900" style="letter-spacing: -0.016em;">Deep Tissue Massage</p>
+                                        <p class="text-xs text-surface-400 mt-0.5" style="letter-spacing: -0.016em;">60 min · $85.00</p>
                                     </div>
-                                    <svg class="w-4 h-4 text-slate-300 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-surface-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
                             </div>
 
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">Calendar</p>
-                                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-sm">
+                                <p class="text-[11px] font-semibold uppercase text-surface-400 mb-2" style="letter-spacing: 0.06em;">Calendar</p>
+                                <div class="bg-white rounded-[16px] p-3"
+                                     style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px, rgba(0,39,80,0.03) 0px 4px 8px -2px;">
                                     <div class="flex items-center justify-between mb-3">
-                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">April 2026</p>
+                                        <p class="text-sm font-semibold text-surface-900" style="letter-spacing: -0.016em;">May 2026</p>
                                         <div class="flex gap-1">
-                                            <div class="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                                                <svg class="w-3 h-3 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                                            <div class="w-6 h-6 rounded-md bg-surface-50 flex items-center justify-center" style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px;">
+                                                <svg class="w-3 h-3 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                                             </div>
-                                            <div class="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                                                <svg class="w-3 h-3 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                            <div class="w-6 h-6 rounded-md bg-surface-50 flex items-center justify-center" style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px;">
+                                                <svg class="w-3 h-3 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-7 gap-1 text-center">
                                         @foreach(['S','M','T','W','T','F','S'] as $d)
-                                        <div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 py-1">{{ $d }}</div>
+                                        <div class="text-[10px] font-semibold text-surface-400 py-1" style="letter-spacing: 0.04em;">{{ $d }}</div>
                                         @endforeach
-                                        @foreach([null,null,'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30',null] as $day)
-                                        @if($day === '25')
-                                        <div class="text-[11px] font-bold w-6 h-6 mx-auto rounded-full bg-brand-600 dark:bg-brand-500 text-white flex items-center justify-center shadow-sm shadow-brand-500/25">{{ $day }}</div>
-                                        @elseif(in_array($day, ['13','14','20','21','27','28']))
-                                        <div class="text-[11px] text-slate-300 dark:text-slate-600 w-6 h-6 mx-auto rounded-full flex items-center justify-center">{{ $day ?? '' }}</div>
-                                        @elseif($day && $day < '25')
-                                        <div class="text-[11px] text-slate-300 dark:text-slate-600 w-6 h-6 mx-auto rounded-full flex items-center justify-center">{{ $day }}</div>
+                                        @foreach([null,null,null,'1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31',null,null] as $day)
+                                        @if($day === '14')
+                                        <div class="text-[11px] font-bold w-6 h-6 mx-auto rounded-full text-surface-900 flex items-center justify-center" style="background-color: #d0f100;">{{ $day }}</div>
+                                        @elseif(in_array($day, ['11','12','17','18','24','25','31']))
+                                        <div class="text-[11px] text-surface-300 w-6 h-6 mx-auto rounded-full flex items-center justify-center">{{ $day ?? '' }}</div>
                                         @elseif($day)
-                                        <div class="text-[11px] text-slate-600 dark:text-slate-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 w-6 h-6 mx-auto rounded-full flex items-center justify-center cursor-pointer transition-colors">{{ $day }}</div>
+                                        <div class="text-[11px] text-surface-600 hover:bg-surface-50 hover:text-surface-900 w-6 h-6 mx-auto rounded-full flex items-center justify-center cursor-pointer transition-colors" style="letter-spacing: -0.016em;">{{ $day }}</div>
                                         @else
                                         <div></div>
                                         @endif
@@ -178,45 +186,53 @@
                         {{-- Right: Time slots + confirm --}}
                         <div class="space-y-4">
                             <div>
-                                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">Available times</p>
+                                <p class="text-[11px] font-semibold uppercase text-surface-400 mb-2" style="letter-spacing: 0.06em;">Available times</p>
                                 <div class="grid grid-cols-2 gap-2">
                                     @foreach(['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM'] as $i => $time)
                                     @if($i === 2)
-                                    <div class="rounded-xl border border-brand-600 dark:border-brand-500 bg-brand-600 dark:bg-brand-500 text-white text-center py-2.5 text-sm font-semibold shadow-md shadow-brand-500/25">{{ $time }}</div>
+                                    <div class="rounded-[16px] text-surface-900 text-center py-2.5 text-sm font-semibold cursor-pointer" style="background-color: #d0f100; box-shadow: rgba(24,37,66,0.32) 0px 1px 3px 0px, rgba(24,37,66,0.44) 0px 8px 16px -8px; letter-spacing: -0.016em;">{{ $time }}</div>
                                     @else
-                                    <div class="rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-center py-2.5 text-sm font-medium hover:border-brand-300 dark:hover:border-brand-500 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 cursor-pointer transition-colors">{{ $time }}</div>
+                                    <div class="rounded-[16px] bg-white text-surface-600 text-center py-2.5 text-sm font-medium cursor-pointer transition-all duration-150 hover:bg-surface-50" style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px; letter-spacing: -0.016em;">{{ $time }}</div>
                                     @endif
                                     @endforeach
                                 </div>
                             </div>
 
-                            <div class="bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-200 dark:border-brand-800 p-4">
-                                <p class="text-xs font-semibold uppercase tracking-widest text-brand-600 dark:text-brand-400 mb-2">Appointment</p>
-                                <p class="text-sm font-bold text-slate-900 dark:text-white">Friday, April 25 at 10:00 AM</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">60 minute session</p>
+                            <div class="rounded-[16px] p-4 bg-surface-50" style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px;">
+                                <p class="text-[11px] font-semibold uppercase text-surface-500 mb-2" style="letter-spacing: 0.06em;">Appointment</p>
+                                <p class="text-sm font-bold text-surface-900" style="letter-spacing: -0.016em;">Wednesday, May 14 at 10:00 AM</p>
+                                <p class="text-xs text-surface-400 mt-0.5" style="letter-spacing: -0.016em;">60 minute session</p>
                             </div>
 
-                            <div class="w-full py-3 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white text-sm font-semibold rounded-xl text-center transition-all duration-200 flex items-center justify-center gap-2 shadow-md shadow-brand-500/25 hover:shadow-lg hover:shadow-brand-500/30 cursor-pointer">
+                            <button class="btn-cta w-full justify-center py-3 text-[15px]">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                 </svg>
                                 Confirm Booking
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        {{-- ─── Features ───────────────────────────────────────────────── --}}
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        {{-- ─── Features — Ghost Canvas with elevated cards ──────────────── --}}
+        <section class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pb-20">
             <div class="text-center mb-14">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/20 border border-brand-100 dark:border-brand-800 text-brand-600 dark:text-brand-400 text-xs font-semibold tracking-wide uppercase mb-4 animate-fade-in">Powerful Features</div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight text-balance">Everything you need to run bookings</h2>
-                <p class="mt-4 text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-lg">A simple, complete platform for businesses and the clients they serve.</p>
+                <div class="inline-flex items-center gap-2 rounded-2xl bg-white px-3.5 py-1.5 mb-5"
+                     style="box-shadow: rgba(0,39,80,0.06) 0px 4px 12px -2px, rgba(0,39,80,0.04) 0px 0px 0px 1px;">
+                    <span class="text-[12px] font-semibold text-surface-500 uppercase" style="letter-spacing: 0.04em;">Platform</span>
+                </div>
+                <h2 class="font-display font-normal text-surface-900 text-balance"
+                    style="font-size: 40px; line-height: 1.05; letter-spacing: -0.010em; font-feature-settings: 'ss04','ss06','ss09','ss10','ss11';">
+                    Everything you need to run bookings
+                </h2>
+                <p class="mt-4 text-surface-500 max-w-lg mx-auto text-[17px] leading-relaxed" style="letter-spacing: -0.016em;">
+                    A simple, complete platform for businesses and the clients they serve.
+                </p>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @php
                 $features = [
                     [
@@ -253,29 +269,38 @@
                 @endphp
 
                 @foreach($features as $feature)
-                <div class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:border-brand-200 dark:hover:border-brand-700 hover:shadow-soft dark:hover:shadow-soft-lg transition-all duration-300">
-                    <div class="w-11 h-11 rounded-xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center mb-4 group-hover:bg-brand-100 dark:group-hover:bg-brand-900/40 group-hover:scale-110 transition-all duration-300">
-                        <svg class="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="group bg-white rounded-[20px] p-5 transition-all duration-300 hover:shadow-card-hover"
+                     style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px, rgba(0,39,80,0.04) 0px 6px 12px -3px, rgba(0,39,80,0.03) 0px 32px 32px -16px;">
+                    <div class="w-10 h-10 rounded-[16px] bg-surface-50 flex items-center justify-center mb-4 transition-colors duration-300 group-hover:bg-brand-50/50"
+                         style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px;">
+                        <svg class="w-5 h-5 text-surface-600 group-hover:text-brand-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $feature['icon'] }}"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-slate-900 dark:text-white mb-1">{{ $feature['title'] }}</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{{ $feature['desc'] }}</p>
+                    <h3 class="font-sans font-semibold text-surface-900 mb-1.5 text-[15px]" style="letter-spacing: -0.016em; line-height: 1.29;">{{ $feature['title'] }}</h3>
+                    <p class="text-[14px] text-surface-500 leading-relaxed" style="letter-spacing: -0.016em;">{{ $feature['desc'] }}</p>
                 </div>
                 @endforeach
             </div>
         </section>
 
-        {{-- ─── CTA ────────────────────────────────────────────────────── --}}
+        {{-- ─── CTA Section — Ghost Canvas with Cosmos Gradient card ──────── --}}
         @guest
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-            <div class="bg-gradient-to-br from-brand-600 to-brand-700 dark:from-brand-700 dark:to-blue-900 rounded-3xl p-10 sm:p-14 text-center shadow-soft-lg relative overflow-hidden">
-                <div class="absolute inset-0 pointer-events-none" style="background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(255,255,255,0.05) 0%, transparent 50%);"></div>
-                <div class="relative">
-                    <h2 class="text-3xl font-extrabold text-white tracking-tight mb-3">Ready to get started?</h2>
-                    <p class="text-brand-100 dark:text-blue-200 mb-8 max-w-md mx-auto">Create your free account and start accepting bookings today. No credit card required.</p>
-                    <a href="{{ route('register') }}"
-                       class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-brand-700 dark:text-brand-600 hover:bg-brand-50 hover:text-brand-800 font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-px active:translate-y-px">
+        <section class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+            <div class="rounded-[20px] overflow-hidden relative"
+                 style="background: linear-gradient(135deg, #001033 0%, #0050f8 60%, #5fbdf7 100%); padding: 56px;">
+                {{-- Dot texture --}}
+                <div class="absolute inset-0 opacity-[0.05] pointer-events-none"
+                     style="background-image: radial-gradient(circle, rgba(255,255,255,1) 1px, transparent 1px); background-size: 20px 20px;"></div>
+                <div class="relative text-center max-w-lg mx-auto">
+                    <h2 class="font-display font-normal text-white mb-3 text-balance"
+                        style="font-size: 40px; line-height: 1.05; letter-spacing: -0.010em; font-feature-settings: 'ss04','ss06','ss09','ss10','ss11';">
+                        Ready to get started?
+                    </h2>
+                    <p class="text-white/70 mb-8 text-[16px] leading-relaxed" style="letter-spacing: -0.016em;">
+                        Create your free account and start accepting bookings today. No credit card required.
+                    </p>
+                    <a href="{{ route('register') }}" class="btn-cta px-8 py-3.5 text-[15px]">
                         Create Free Account
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -287,32 +312,13 @@
         @endguest
     </main>
 
-    {{-- ─── Footer ─────────────────────────────────────────────────── --}}
-    <footer class="border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400 dark:text-slate-500">
-            <div class="flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-lg bg-brand-600 dark:bg-brand-500 flex items-center justify-center shadow-sm shadow-brand-500/25">
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                    </svg>
-                </div>
-                <span class="font-semibold text-slate-700 dark:text-slate-300">BookEase</span>
-            </div>
-            <span class="text-slate-400 dark:text-slate-500">&copy; {{ date('Y') }} BookEase. All rights reserved.</span>
+    {{-- ─── Footer ──────────────────────────────────────────────────────── --}}
+    <footer class="bg-white border-t border-black/[0.05]">
+        <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="font-semibold text-surface-900 text-sm" style="letter-spacing: -0.016em;">BookEase</span>
+            <span class="text-sm text-surface-400" style="letter-spacing: -0.016em;">&copy; {{ date('Y') }} BookEase. All rights reserved.</span>
         </div>
     </footer>
 
-    <script>
-        function toggleDark() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-        }
-    </script>
 </body>
 </html>

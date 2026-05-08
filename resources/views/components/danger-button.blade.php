@@ -9,7 +9,7 @@
         'xl' => 'px-6 py-3.5 text-base gap-2.5',
     };
 
-    $baseClasses = 'relative inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus-ring disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] overflow-hidden';
+    $baseClasses = 'relative inline-flex items-center justify-center font-semibold rounded-full transition-all duration-150 focus-ring disabled:opacity-50 disabled:cursor-not-allowed active:translate-y-px overflow-hidden';
     $colorClasses = 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 dark:bg-red-500 dark:hover:bg-red-600 dark:active:bg-red-700';
     $shadowClasses = 'shadow-md shadow-red-600/20 hover:shadow-lg hover:shadow-red-600/30 dark:shadow-red-500/20 dark:hover:shadow-red-500/30';
 @endphp
