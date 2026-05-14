@@ -12,7 +12,7 @@ class ServiceRepository
     public function filter(array $filters = []): LengthAwarePaginator
     {
         return Service::query()
-            ->with('category')
+            ->with(['category', 'providers'])
             ->filter($filters)
             ->paginate(10);
     }
