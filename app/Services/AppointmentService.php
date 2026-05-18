@@ -8,6 +8,7 @@ use App\Contracts\Repositories\AppointmentRepositoryInterface;
 use App\Enums\AppointmentStatus;
 use App\Events\AppointmentBooked;
 use App\Exceptions\SlotUnavailableException;
+use App\Jobs\SendAppointmentReminderJob;
 use App\Models\Appointment;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Collection;
@@ -69,6 +70,7 @@ class AppointmentService
             'notes' => $notes,
         ]);
         AppointmentBooked::dispatch($appointment->load(['user', 'service']));
+        SendAppointmentReminderJob::dispatch($appointment);
 
         return $appointment;
     }
