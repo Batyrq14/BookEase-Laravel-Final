@@ -27,6 +27,56 @@ Route::get('/dashboard', function () {
             'upcoming_week' => Appointment::whereBetween('scheduled_at', [now(), now()->endOfWeek()])
                 ->where('status', 'booked')->count(),
         ];
+
+        // ─── Chart data ───────────────────────────────────────────
+        // Bookings per day, last 14 days
+        $start = now()->subDays(13)->startOfDay();
+        $rows = Appointment::query()
+            ->selectRaw('DATE(scheduled_at) as day, COUNT(*) as total')
+            ->where('scheduled_at', '>=', $start)
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $bookingsByDay = ['labels' => [], 'data' => []];
+        for ($i = 0; $i < 14; $i++) {
+            $date = $start->copy()->addDays($i)->toDateString();
+            $bookingsByDay['labels'][] = $start->copy()->addDays($i)->format('M j');
+            $bookingsByDay['data'][] = (int) ($rows[$date] ?? 0);
+        }
+
+        // Status distribution
+        $statusRows = Appointment::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $statusDistribution = [
+            'booked' => (int) ($statusRows['booked'] ?? 0),
+            'completed' => (int) ($statusRows['completed'] ?? 0),
+            'cancelled' => (int) ($statusRows['cancelled'] ?? 0),
+        ];
+
+        // Top 5 services by booking count
+        $topServices = Appointment::query()
+            ->selectRaw('service_id, COUNT(*) as total')
+            ->groupBy('service_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->with('service:id,name')
+            ->get()
+            ->map(fn ($row) => [
+                'name' => $row->service?->name ?? 'Unknown',
+                'total' => (int) $row->total,
+            ]);
+
+        $stats['charts'] = [
+            'bookingsByDay' => $bookingsByDay,
+            'statusDistribution' => $statusDistribution,
+            'topServices' => [
+                'labels' => $topServices->pluck('name')->all(),
+                'data' => $topServices->pluck('total')->all(),
+            ],
+        ];
     } elseif ($user->isProvider()) {
         $providerAppointments = Appointment::query()
             ->where('status', 'booked')

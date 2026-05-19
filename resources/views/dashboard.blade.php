@@ -56,6 +56,41 @@
             />
         </div>
 
+        {{-- ─── Charts ──────────────────────────────────────────────── --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {{-- Bookings per day (last 14 days) --}}
+            <div class="lg:col-span-2 bg-white dark:bg-ink-900 rounded-[20px] p-5"
+                 style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px, rgba(0,39,80,0.04) 0px 6px 12px -3px;">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase text-surface-400 dark:text-ink-500" style="letter-spacing: 0.06em;">Bookings</p>
+                        <h4 class="text-[18px] font-semibold text-surface-900 dark:text-white mt-0.5" style="letter-spacing: -0.016em;">Last 14 days</h4>
+                    </div>
+                </div>
+                <div style="height: 220px;"><canvas id="chart-bookings-by-day"></canvas></div>
+            </div>
+
+            {{-- Status distribution --}}
+            <div class="bg-white dark:bg-ink-900 rounded-[20px] p-5"
+                 style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px, rgba(0,39,80,0.04) 0px 6px 12px -3px;">
+                <div class="mb-4">
+                    <p class="text-[11px] font-semibold uppercase text-surface-400 dark:text-ink-500" style="letter-spacing: 0.06em;">Status</p>
+                    <h4 class="text-[18px] font-semibold text-surface-900 dark:text-white mt-0.5" style="letter-spacing: -0.016em;">Distribution</h4>
+                </div>
+                <div style="height: 220px;"><canvas id="chart-status"></canvas></div>
+            </div>
+
+            {{-- Top services --}}
+            <div class="lg:col-span-3 bg-white dark:bg-ink-900 rounded-[20px] p-5"
+                 style="box-shadow: rgba(0,39,80,0.04) 0px 0px 0px 1px, rgba(0,39,80,0.04) 0px 6px 12px -3px;">
+                <div class="mb-4">
+                    <p class="text-[11px] font-semibold uppercase text-surface-400 dark:text-ink-500" style="letter-spacing: 0.06em;">Most booked</p>
+                    <h4 class="text-[18px] font-semibold text-surface-900 dark:text-white mt-0.5" style="letter-spacing: -0.016em;">Top services</h4>
+                </div>
+                <div style="height: 240px;"><canvas id="chart-top-services"></canvas></div>
+            </div>
+        </div>
+
         <div class="flex flex-wrap gap-2.5">
             <a href="{{ route('admin.appointments.index') }}" class="btn-dark text-sm px-5 py-2.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
@@ -196,5 +231,103 @@
             />
         </div>
     </div>
+    @endcan
+
+    @can('admin')
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const charts = @json($stats['charts']);
+            const navy = '#1b2540';
+            const cosmos = '#001033';
+            const chartreuse = '#d0f100';
+            const slate = '#6b7184';
+            const fog = '#b1b5c0';
+
+            Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
+            Chart.defaults.font.size = 12;
+            Chart.defaults.color = slate;
+
+            // Bookings per day — line
+            new Chart(document.getElementById('chart-bookings-by-day'), {
+                type: 'line',
+                data: {
+                    labels: charts.bookingsByDay.labels,
+                    datasets: [{
+                        label: 'Bookings',
+                        data: charts.bookingsByDay.data,
+                        borderColor: cosmos,
+                        backgroundColor: 'rgba(0, 80, 248, 0.08)',
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 3,
+                        pointBackgroundColor: cosmos,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: slate } },
+                        y: { beginAtZero: true, ticks: { precision: 0, color: slate }, grid: { color: 'rgba(0,39,80,0.06)' } },
+                    },
+                },
+            });
+
+            // Status distribution — donut
+            new Chart(document.getElementById('chart-status'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Booked', 'Completed', 'Cancelled'],
+                    datasets: [{
+                        data: [
+                            charts.statusDistribution.booked,
+                            charts.statusDistribution.completed,
+                            charts.statusDistribution.cancelled,
+                        ],
+                        backgroundColor: [cosmos, chartreuse, fog],
+                        borderWidth: 0,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, pointStyle: 'circle' } },
+                    },
+                },
+            });
+
+            // Top services — horizontal bar
+            new Chart(document.getElementById('chart-top-services'), {
+                type: 'bar',
+                data: {
+                    labels: charts.topServices.labels,
+                    datasets: [{
+                        label: 'Bookings',
+                        data: charts.topServices.data,
+                        backgroundColor: cosmos,
+                        borderRadius: 6,
+                        barThickness: 18,
+                    }],
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, ticks: { precision: 0, color: slate }, grid: { color: 'rgba(0,39,80,0.06)' } },
+                        y: { grid: { display: false }, ticks: { color: navy } },
+                    },
+                },
+            });
+        });
+    </script>
+    @endpush
     @endcan
 </x-app-layout>

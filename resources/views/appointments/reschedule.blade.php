@@ -54,6 +54,7 @@
                     <div id="location-map" style="height: 220px; z-index: 1;"></div>
                 </div>
 
+                @can('admin')
                 <div x-show="selectedId && !hasLocation" x-cloak class="flex items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
                     <div class="flex items-center gap-2.5">
                         <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,13 +63,12 @@
                         </svg>
                         <span>Add a location in Services first so clients can see where to go.</span>
                     </div>
-                    @can('admin')
                     <a x-bind:href="`/services/${selectedId}/edit`"
                        class="shrink-0 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-900 transition hover:bg-amber-100">
                         Edit service
                     </a>
-                    @endcan
                 </div>
+                @endcan
 
                 <input type="hidden" id="scheduled_at" name="scheduled_at" :value="scheduledAtValue">
 

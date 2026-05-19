@@ -96,13 +96,6 @@
                     </tbody>
                 </table>
             </div>
-            {{-- Pagination --}}
-            @if($appointments->hasPages())
-            <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-700">
-                {{ $appointments->links() }}
-            </div>
-            @endif
-
             @else
             <x-empty-state
                 title="No appointments yet"
