@@ -39,7 +39,7 @@ A modern, multi-role appointment booking system built with Laravel 11. Clients d
 
 | Layer | Technology |
 |---|---|
-| Framework | Laravel 13 (PHP 8.5) |
+| Framework | Laravel 13 (PHP 8.3+) |
 | Database | PostgreSQL |
 | Authentication | Laravel Breeze + Laravel Sanctum (API) |
 | Frontend | Blade · Tailwind CSS · Alpine.js |
@@ -58,7 +58,8 @@ A modern, multi-role appointment booking system built with Laravel 11. Clients d
 | **Repository / Service Pattern** | `AppointmentRepository`, `ServiceRepository`, `CategoryRepository` with interfaces bound via the service container in `AppServiceProvider` |
 | **Dependency Injection** | `AppointmentRepositoryInterface` resolved automatically throughout the application |
 | **Events & Listeners** | `AppointmentBooked` event triggers `SendAppointmentConfirmation` listener |
-| **Queues** | Listener implements `ShouldQueue`; confirmation emails are dispatched asynchronously |
+| **Queues & Jobs** | `SendAppointmentReminderJob` queued for reminder delivery; `SendAppointmentConfirmation` listener implements `ShouldQueue` for async confirmation emails |
+| **Pivot Tables (Many-to-Many)** | `service_user` pivot connects providers to multiple services — `User::services()` ↔ `Service::users()` with `withTimestamps()` |
 | **Policies** | `AppointmentPolicy` and `ServicePolicy` registered in `AppServiceProvider` |
 | **Gates** | `admin`, `provider`, and `client` gates enforce route-level access control |
 | **API Resources** | `ServiceResource`, `AppointmentResource`, `AppointmentCalendarSlotResource` |
@@ -83,7 +84,7 @@ A modern, multi-role appointment booking system built with Laravel 11. Clients d
 
 ### Requirements
 
-- PHP 8.2+
+- PHP 8.3+
 - Composer
 - PostgreSQL
 - Node.js 18+
@@ -224,13 +225,25 @@ app/
 ### Core Database Schema
 
 ```
-users           id, name, email, phone, bio, role, password
+users           id, name, email, phone, bio, role, category_id, password
 categories      id, name
 services        id, name, description, duration_minutes, price,
                 category_id, provider_id, creator_user_id,
                 address, latitude, longitude
 appointments    id, user_id, service_id, scheduled_at, ends_at, status, notes
+service_user    service_id, user_id, created_at, updated_at   (pivot — many-to-many)
 ```
+
+### Entity Relationships
+
+| Relationship | Type | Description |
+|---|---|---|
+| `Category` → `Service` | one-to-many | A category groups many services |
+| `Category` → `User` | one-to-many | A category groups many providers |
+| `User (client)` → `Appointment` | one-to-many | A client books many appointments |
+| `User (provider)` → `Service` | one-to-many | The lead provider of a service (`provider_id`) |
+| `User` ↔ `Service` | **many-to-many** | Multiple staff assigned to multiple services via `service_user` pivot |
+| `Service` → `Appointment` | one-to-many | A service has many bookings |
 
 ---
 
